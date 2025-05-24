@@ -41,6 +41,7 @@ def verify_email(request, token: str):
     """
     Vérifie l'adresse email de l'utilisateur à l'aide d'un token.
     """
+  
     try:
         email = signer.unsign(token)
         user = Utilisateur.objects.get(email=email)
@@ -48,7 +49,7 @@ def verify_email(request, token: str):
             user.est_email_verifie = True
             user.save()
             # Redirection vers la page de connexion
-            return HttpResponseRedirect("/login")
+            return HttpResponseRedirect(f"{settings.FRONTEND_URL}/login")
         else:
             raise errors.HttpError(400, "Votre email est déjà vérifié.")
     except Utilisateur.DoesNotExist:
@@ -304,3 +305,5 @@ def delete_user(request, user_id: uuid.UUID):
     user_to_delete.delete()
     
     return {"message": f"Utilisateur avec ID {user_id} supprimé avec succès."}
+from postulation_offre.api import router as offres_router
+api.add_router("/offres", offres_router)

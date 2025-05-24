@@ -1,9 +1,40 @@
- function toggleSpinner(show) {
+ let currentStep = 1;
+  const steps = document.querySelectorAll('.step');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const stepIndicator = document.getElementById('step-indicator');
+
+  function showStep(step) {
+    steps.forEach((el, index) => {
+      el.classList.toggle('hidden', index !== step - 1);
+    });
+    prevBtn.classList.toggle('hidden', step === 1);
+    nextBtn.classList.toggle('hidden', step === steps.length);
+    submitBtn.classList.toggle('hidden', step !== steps.length);
+    stepIndicator.textContent = `Étape ${step} sur ${steps.length}`;
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if (currentStep < steps.length) currentStep++;
+    showStep(currentStep);
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentStep > 1) currentStep--;
+    showStep(currentStep);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    showStep(currentStep);
+  });
+function toggleSpinner(show) {
     const spinner = document.getElementById('spinner');
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-    const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
+    //const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
+    const API_BASE_URL = 'https://gwork.onrender.com/auth/auth'
 
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
@@ -213,11 +244,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             body: formData,  // Laissez le navigateur gérer les headers (multipart/form-data)
         });
        
-let output = '';
-for (let [key, value] of formData.entries()) {
-    output += `${key}: ${value}\n`;
-}
-alert(output);
+
 
         const data = await response.json();
         toggleSpinner(false);
@@ -463,7 +490,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         const drawPolygonButton = document.getElementById('drawPolygon');
         const editPolygonButton = document.getElementById('editPolygon');
         const clearPolygonButton = document.getElementById('clearPolygon');
-        const showCoordinatesButton = document.getElementById('showCoordinates');
+        //const showCoordinatesButton = document.getElementById('showCoordinates');
         const exportCoordinatesButton = document.getElementById('exportCoordinates');
         const coordinatesOutput = document.getElementById('coordinatesOutput');
         const polygonStats = document.getElementById('polygonStats');
@@ -659,14 +686,14 @@ map2.on('draw:created', function (e) {
         });
 
         // Gestionnaire pour afficher les coordonnées
-        showCoordinatesButton.addEventListener('click', function() {
-            if (POLYGON_COORDINATES.length > 0) {
-                alert('Coordonnées (stockées dans POLYGON_COORDINATES):\n' + 
-                      JSON.stringify(POLYGON_COORDINATES, null, 2));
-            } else {
-                alert('Aucun polygone dessiné.');
-            }
-        });
+       // showCoordinatesButton.addEventListener('click', function() {
+         //   if (POLYGON_COORDINATES.length > 0) {
+       //         alert('Coordonnées (stockées dans POLYGON_COORDINATES):\n' + 
+         //             JSON.stringify(POLYGON_COORDINATES, null, 2));
+         //   } else {
+        //        alert('Aucun polygone dessiné.');
+        //    }
+       // });
 
         // Gestionnaire pour exporter les coordonnées
         exportCoordinatesButton.addEventListener('click', function() {
@@ -697,3 +724,4 @@ map2.on('draw:created', function (e) {
     // --- Initialisation ---
     // Afficher le formulaire de connexion par défaut au chargement
     showSection('login-form');
+   
