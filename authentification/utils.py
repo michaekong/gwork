@@ -30,12 +30,28 @@ def generate_verification_token(user_email: str) -> str:
     """
     return signer.sign(user_email)
 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
+
 def send_verification_email(user_email: str, token: str):
     """
     Envoie un email de vérification à l'utilisateur.
     """
     verification_link = f"{settings.FRONTEND_URL}/verify-email/?token={token}"
     
+    # Création du contenu HTML de l'email
+    subject = 'Vérifiez votre adresse email pour G-work'
+    html_message = render_to_string('emails/verification_email.html', {
+        'verification_link': verification_link,
+        'user_email': user_email,
+    })
+    plain_message = f"Pour {user_email}, veuillez vérifier votre email en cliquant sur ce lien : {verification_link}"
+    
+    # Affichage dans la console pour le débogage (facultatif)
     print(f"--- EMAIL DE VÉRIFICATION ---")
     print(f"Pour {user_email}, veuillez vérifier votre email en cliquant sur ce lien :")
     print(verification_link)
@@ -43,13 +59,13 @@ def send_verification_email(user_email: str, token: str):
 
     try:
         send_mail(
-            'Vérifiez votre adresse email pour G-work',
-            f'Veuillez cliquer sur ce lien pour vérifier votre email : {verification_link}',
+            subject,
+            plain_message,
             settings.DEFAULT_FROM_EMAIL,
             [user_email],
+            html_message=html_message,
             fail_silently=False,
         )
         logger.info(f"Email de vérification envoyé à {user_email}")
     except Exception as e:
         logger.error(f"Erreur lors de l'envoi de l'email de vérification à {user_email}: {e}")
-
