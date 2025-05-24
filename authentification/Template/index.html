@@ -179,20 +179,44 @@
 
         <div id="message-area" class="hidden p-3 rounded-lg text-center text-sm font-medium"></div>
 
-       <div class="flex justify-center space-x-4 mb-6">
-    <button id="show-register-travailleur" class="px-4 py-2 rounded-md bg-primary-blue text-white hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:ring-opacity-50 transition" aria-label="Inscription Travailleur">
-        <i class="fas fa-user-plus"></i>
+   <div class="flex gap-4">
+    <!-- Inscription Travailleur -->
+    <button id="show-register-travailleur"
+        class="flex flex-col items-center px-4 py-3 rounded-md bg-primary-blue text-white shadow hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:ring-opacity-50 transition"
+        aria-label="Inscription Travailleur"
+        title="Inscription Travailleur">
+        <i class="fas fa-user-tie fa-2x mb-2"></i>
+        <span class="text-sm font-medium">Je suis un Travailleur</span>
     </button>
-    <button id="show-register-employeur" class="px-4 py-2 rounded-md bg-accent-green text-dark-accent hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-accent-green-light focus:ring-opacity-50 transition" aria-label="Inscription Employeur">
-        <i class="fas fa-building"></i>
+
+    <!-- Inscription Employeur -->
+    <button id="show-register-employeur"
+        class="flex flex-col items-center px-4 py-3 rounded-md bg-accent-green text-dark-accent shadow hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-accent-green-light focus:ring-opacity-50 transition"
+        aria-label="Inscription Employeur"
+        title="Inscription Employeur">
+        <i class="fas fa-briefcase fa-2x mb-2"></i>
+        <span class="text-sm font-medium">Je suis un Employeur</span>
     </button>
-    <button id="show-login" class="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition" aria-label="Connexion">
-        <i class="fas fa-sign-in-alt"></i>
+
+    <!-- Connexion -->
+    <button id="show-login"
+        class="flex flex-col items-center px-4 py-3 rounded-md bg-purple-600 text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition"
+        aria-label="Connexion"
+        title="Connexion">
+        <i class="fas fa-sign-in-alt fa-2x mb-2"></i>
+        <span class="text-sm font-medium">Se connecter</span>
     </button>
-    <button id="show-dashboard" class="px-4 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition" aria-label="Tableau de bord">
-        <i class="fas fa-tachometer-alt"></i>
+
+    <!-- Tableau de bord -->
+    <button id="show-dashboard"
+        class="flex flex-col items-center px-4 py-3 rounded-md bg-gray-400 text-white shadow hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition"
+        aria-label="Tableau de bord"
+        title="Tableau de bord">
+        <i class="fas fa-chart-line fa-2x mb-2"></i>
+        <span class="text-sm font-medium">Tableau de bord</span>
     </button>
 </div>
+
 
        <form id="register-travailleur-form" class="space-y-4 hidden">
   <h2 class="text-2xl font-semibold text-dark-accent text-center">Inscription Travailleur</h2>

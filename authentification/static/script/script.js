@@ -3,7 +3,7 @@
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-    const API_BASE_URL = 'http://https://gwork.onrender.com/auth/auth'; // <-- URL mise à jour
+    const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
 
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
@@ -36,7 +36,7 @@
     map3.on('click', function(e) {
         lat3 = e.latlng.lat;
         lng3 = e.latlng.lng;
-https://chatgpt.com/c/6830921b-92f4-800b-8c74-0b265383bf3c
+//chatgpt.com/c/6830921b-92f4-800b-8c74-0b265383bf3c
         // Déplacer le marqueur à la nouvelle position
         marker.setLatLng([lat3, lng3]);
 
@@ -203,7 +203,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         if (cultureEntreprise) formData.append('culture_entreprise', cultureEntreprise);
         if (besoinsMainOeuvre) formData.append('besoins_main_oeuvre_specifiques', besoinsMainOeuvre);
         if (contactRecrutement) formData.append('informations_contact_recrutement', contactRecrutement);
-formData.append('est_entreprise_verifiee', false);
+
       
     }
 
@@ -212,6 +212,12 @@ formData.append('est_entreprise_verifiee', false);
             method: 'POST',
             body: formData,  // Laissez le navigateur gérer les headers (multipart/form-data)
         });
+       
+let output = '';
+for (let [key, value] of formData.entries()) {
+    output += `${key}: ${value}\n`;
+}
+alert(output);
 
         const data = await response.json();
         toggleSpinner(false);
@@ -246,36 +252,44 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
     registerEmployeurForm.addEventListener('submit', (event) => handleRegister(event, 'employeur'));
 
     async function handleLogin(event) {
-        event.preventDefault();
-        toggleSpinner(true);
-        const formData = new FormData(loginForm);
-        const payload = Object.fromEntries(formData.entries());
+    event.preventDefault();
+    toggleSpinner(true);
 
+    const formData = new FormData(loginForm);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        let data;
         try {
-            const response = await fetch(`${API_BASE_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await response.json();
-toggleSpinner(false);
-            if (response.ok) {
-                setAuthToken(data.access_token);
-                showMessage('Connexion réussie !', 'success');
-                loginForm.reset();
-                showSection('dashboard-section');
-                fetchUserProfile(); // Charger les infos de l'utilisateur après connexion
-            } else {
-                showMessage(`Erreur de connexion: ${data.detail || JSON.stringify(data)}`, 'error');
-            }
-        } catch (error) {
-            console.error('Erreur réseau ou inattendue:', error);
-            showMessage('Une erreur est survenue lors de la connexion.', 'error');
+            data = await response.json();
+        } catch (jsonError) {
+            console.warn("⚠️ Impossible d’analyser JSON", jsonError);
+            data = { detail: 'Erreur inattendue du serveur.' };
         }
+
+        if (response.ok) {
+            setAuthToken(data.access_token);
+            showMessage('Connexion réussie !', 'success');
+            loginForm.reset();
+            showSection('dashboard-section');
+            fetchUserProfile();
+        } else {
+            showMessage(`Erreur: ${data.detail || 'Erreur inconnue'}`, 'error');
+        }
+
+    } catch (error) {
+        console.error('❌ Erreur réseau ou serveur', error);
+        showMessage('Erreur réseau.', 'error');
+    } finally {
+        toggleSpinner(false);
     }
+}
 
     loginForm.addEventListener('submit', handleLogin);
 

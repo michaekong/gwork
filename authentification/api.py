@@ -34,32 +34,32 @@ api = NinjaAPI(
 
 # --- Endpoints d'Authentification ---
 
+from django.http import HttpResponseRedirect
+
 @api.get("/auth/verify-email/", response=MessageResponse)
 def verify_email(request, token: str):
     """
     Vérifie l'adresse email de l'utilisateur à l'aide d'un token.
     """
     try:
-        # L'instance 'signer' est importée de utils.py, pas besoin de la recréer ici.
-        email = signer.unsign(token) # TimestampSigner gère l'expiration automatiquement
+        email = signer.unsign(token)
         user = Utilisateur.objects.get(email=email)
         if not user.est_email_verifie:
             user.est_email_verifie = True
             user.save()
-            return {"message": "Votre adresse email a été vérifiée avec succès."}
+            # Redirection vers la page de connexion
+            return HttpResponseRedirect("/login")
         else:
             raise errors.HttpError(400, "Votre email est déjà vérifié.")
     except Utilisateur.DoesNotExist:
         raise errors.HttpError(404, "Utilisateur non trouvé pour cette adresse email.")
-    except SignatureExpired: # Cette exception est levée par TimestampSigner si le token est expiré
+    except SignatureExpired:
         raise errors.HttpError(400, "Le lien de vérification a expiré. Veuillez demander un nouveau lien.")
-    except BadSignature: # Cette exception est levée par TimestampSigner si le token est invalide
+    except BadSignature:
         raise errors.HttpError(400, "Le lien de vérification est invalide.")
     except Exception as e:
         print(f"Erreur lors de la vérification de l'email: {e}")
         raise errors.HttpError(500, "Une erreur inattendue est survenue lors de la vérification de l'email.")
-
-
 from ninja import File, Form
 from ninja.files import UploadedFile
 import json
@@ -144,53 +144,70 @@ from .models import Utilisateur, Employeur
 
  # Assurez-vous d'avoir une gestion des erreurs comme dans votre code précédent
 
-@api.post("/auth/register/employeur", response=UserProfileResponse)
-def register_employeur(request, payload: EmployeurRegisterPayload):
-    """
-    Enregistre un nouvel utilisateur en tant qu'Employeur.
-    """
-    if Utilisateur.objects.filter(email=payload.email).exists():
-        raise errors.HttpError(400, "Cet email est déjà utilisé.")
+from ninja import Router, Form, File
+from django.contrib.auth.hashers import make_password
+from .models import Employeur, Utilisateur
 
-    # Hachage du mot de passe
-    hashed_password = make_password(payload.mot_de_passe)
+@api.post("/auth/register/employeur", response=dict)
+def register_employeur(
+    request,
+    email: str = Form(...),
+    mot_de_passe: str = Form(...),
+    nom_entreprise: str = Form(...),
+    secteur_activite: str = Form(...),
+    adresse_physique_entreprise: str = Form(...),
+    site_web: str = Form(...),
+    presentation_entreprise: str = Form(None),
+    culture_entreprise: str = Form(None),
+    besoins_main_oeuvre_specifiques: str = Form(None),
+    informations_contact_recrutement: str = Form(None),
+    lat3: float = Form(None),
+    lng3: float = Form(None),
+    logo_file: UploadedFile = File(None),
+):
+    # Vérifie si l'email existe déjà
+    if Utilisateur.objects.filter(email=email).exists():
+        raise errors.HttpError(400, "Un utilisateur avec cet email existe déjà.")
 
-    # Création de l'utilisateur
+    # Hash du mot de passe
+    hashed_password = make_password(mot_de_passe)
+
+    # Crée l'utilisateur (Employeur)
     user = Utilisateur.objects.create_user(
-        username=payload.email,
-        email=payload.email,
-        password=payload.mot_de_passe,
+        username=email,
+        email=email,
+        password=hashed_password,  # Utilise le mot de passe haché
         is_active=True,
-        longitude=payload.lng3,
-        latitude=payload.lat3
+        longitude=lng3,
+        latitude=lat3,
     )
 
-    # Gestion du logo
-    logo_file_instance = None
-    if payload.logo_file:
-        # Enregistrer le fichier logo dans le système de fichiers
-        logo_name = f'logos/{payload.logo_file.name}'  # Définir un nom de fichier unique
-        logo_file_instance = ContentFile(payload.logo_file.read(), name=logo_name)
-        # Utilisation du stockage par défaut de Django pour stocker le fichier
-        path = default_storage.save(logo_name, logo_file_instance)
-        logo_url = default_storage.url(path)  # L'URL du fichier
+    # Gérer le logo : stockage et génération d'URL
+    logo_url = None
+    if logo_file:
+        path = default_storage.save(f"logos/{logo_file.name}", ContentFile(logo_file.read()))
+        logo_url = default_storage.url(path)
 
-    # Création du profil employeur
-    employeur_profile = Employeur.objects.create(
+    # Création du profil de l'employeur
+    employeur = Employeur.objects.create(
         id_employeur=user,
-        nom_entreprise=payload.nom_entreprise,
-        secteur_activite=payload.secteur_activite,
-        adresse_physique_entreprise=payload.adresse_physique_entreprise,
-        site_web=payload.site_web,
-        logo_file=logo_file_instance,  # Lien vers le fichier logo téléchargé
-        presentation_entreprise=payload.presentation_entreprise,
-        culture_entreprise=payload.culture_entreprise,
-        besoins_main_oeuvre_specifiques=payload.besoins_main_oeuvre_specifiques,
-        informations_contact_recrutement=payload.informations_contact_recrutement,
-        est_entreprise_verifiee=payload.est_entreprise_verifiee,
+        nom_entreprise=nom_entreprise,
+        secteur_activite=secteur_activite,
+        adresse_physique_entreprise=adresse_physique_entreprise,
+        site_web=site_web,
+        presentation_entreprise=presentation_entreprise,
+        culture_entreprise=culture_entreprise,
+        besoins_main_oeuvre_specifiques=besoins_main_oeuvre_specifiques,
+        informations_contact_recrutement=informations_contact_recrutement,
+        logo_file=logo_url,
+        est_entreprise_verifiee=False
     )
 
-    return user  # Retourne l'objet utilisateur créé (ou vous pouvez retourner un profil utilisateur détaillé)
+    # Envoi d'un email de vérification
+    verification_token = generate_verification_token(user.email)
+    send_verification_email(user.email, verification_token)
+
+    return {"message": "Employeur créé avec succès"}
 
 
 @api.post("/auth/login", response=TokenResponse)

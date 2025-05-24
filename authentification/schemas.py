@@ -69,8 +69,8 @@ class EmployeurRegisterPayload(BaseModel):
     informations_contact_recrutement: Optional[str] = None
     lat3: Optional[float] = None  # Latitude de l'employeur
     lng3: Optional[float] = None  # Longitude de l'employeur
-    est_entreprise_verifiee: bool = False  # Champ pour indiquer si l'entreprise est vérifiée
-
+     # Champ pour indiquer si l'entreprise est vérifiée
+    
     class Config:
         min_anystr_length = 1
         anystr_strip_whitespace = True
