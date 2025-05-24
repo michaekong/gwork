@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-work - Accueil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+     <script src="{% static 'Authentification/script.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Police Inter pour une meilleure lisibilité */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .spinner {
+    display: none; /* Masqué par défaut */
+    width: 80px; /* Taille du spinner augmentée */
+    height: 80px;
+    position: fixed; /* Position fixe pour le centrer */
+    top: 50%; /* Centrer verticalement */
+    left: 50%; /* Centrer horizontalement */
+    transform: translate(-50%, -50%); /* Ajuster pour centrer exactement */
+    z-index: 1000; /* Au-dessus des autres éléments */
+}
+
+.spinner div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+    background: rgba(128, 0, 128, 0.7); /* Couleur violet */
+    animation: bounce 1.2s infinite ease-in-out;
+}
+
+/* Animation pour chaque cercle */
+.spinner div:nth-child(1) {
+    animation-delay: -0.4s;
+}
+
+.spinner div:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(0.6);
+    }
+    50% {
+        transform: scale(1);
+    }
+}
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="spinner" id="spinner">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+    <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border border-gray-200">
+        <h1 class="text-5xl font-extrabold text-gray-900 mb-4">G-work</h1>
+        
+        <p class="text-xl text-gray-700 mb-8 leading-relaxed">
+            Construisons l'emploi dans le génie civil.
+        </p>
+
+        <p class="text-lg text-gray-600 mb-6">
+            Prêt à trouver votre prochain défi ou votre talent idéal ?
+        </p>
+
+        <a href="{% url 'home' %}"
+        id="start-button"
+           class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-300">
+            Commencer
+        </a>
+    </div>
+<script>
+    document.getElementById('start-button').addEventListener('click', function(event) {
+        event.preventDefault(); // Empêcher le lien de suivre l'URL immédiatement
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'block'; // Afficher le spinner
+
+        // Simuler un délai pour démontrer le spinner
+        setTimeout(() => {
+            window.location.href = '{% url "home" %}'; // Rediriger après 2 secondes
+        }, 2000); // Délai de 2 secondes (ajustez si nécessaire)
+    });
+</script>
+</body>
+
+</html>

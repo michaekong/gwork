@@ -1,0 +1,429 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-work - Authentification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+     <link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-sA+4JqxYCE0ZLvYk38PVT0HP6rR2t5sRN4RqxN8pbig="
+  crossorigin=""
+/>
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+         #map {
+            height: 500px;
+            width: 100%;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F7FA; /* Secondaire Gris #F5F7FA */
+        }
+        /* Custom colors for specific hex values not directly matching Tailwind defaults */
+        .text-dark-accent {
+            color: #2C2C2C; /* Texte/Accent Gris foncé/Noir #2C2C2C */
+        }
+        .bg-primary-blue {
+            background-color: #007BFF; /* Primaire Bleu */
+        }
+        .hover\:bg-primary-blue-darker:hover {
+            background-color: #0069D9; /* Un peu plus foncé pour le hover */
+        }
+        .focus\:ring-primary-blue-light:focus {
+            --tw-ring-color: #007BFF; /* Couleur du ring pour le focus */
+        }
+        .bg-accent-green {
+            background-color: #A8E6CF; /* Accentuation Vert */
+        }
+        .hover\:bg-accent-green-darker:hover {
+            background-color: #8FD8B9; /* Un peu plus foncé pour le hover */
+        }
+        .focus\:ring-accent-green-light:focus {
+            --tw-ring-color: #A8E6CF; /* Couleur du ring pour le focus */
+        }
+         #map {
+            height: 400px; /* Hauteur de la carte */
+    <script src="{% static 'script/script.js' %}"></script>        width: 100%; /* Largeur de la carte */
+        }
+.spinner {
+    display: none; /* Masqué par défaut */
+    width: 80px; /* Taille du spinner augmentée */
+    height: 80px;
+    position: fixed; /* Position fixe pour le centrer */
+    top: 50%; /* Centrer verticalement */
+    left: 50%; /* Centrer horizontalement */
+    transform: translate(-50%, -50%); /* Ajuster pour centrer exactement */
+    z-index: 1000; /* Au-dessus des autres éléments */
+}
+
+.spinner div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+    background: rgba(128, 0, 128, 0.7); /* Couleur violet */
+    animation: bounce 1.2s infinite ease-in-out;
+}
+
+/* Animation pour chaque cercle */
+.spinner div:nth-child(1) {
+    animation-delay: -0.4s;
+}
+
+.spinner div:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(0.6);
+    }
+    50% {
+        transform: scale(1);
+    }
+}
+#tooltip {
+    z-index: 2000; /* Au-dessus du spinner */
+    width: 300px; /* Largeur de l'info-bulle */
+}/* Si nécessaire, sinon utilise Tailwind */
+#tooltip-overlay {
+  z-index: 2000; /* Superposé à tout */
+}
+ #map2 {
+            height: 500px;
+            width: 100%;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007cba;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #005a87;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .output-section {
+            margin-top: 20px;
+        }
+        #coordinatesOutput {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .info-box {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .stats {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+   
+ <div class="spinner" id="spinner">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+<!-- Overlay pour rendre la page inactive -->
+<div id="tooltip-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+  <div id="tooltip" class="bg-white border border-gray-300 rounded-xl shadow-2xl p-6 w-[90%] max-w-md">
+    <p class="text-base text-gray-700 font-medium">Veuillez consulter votre email pour vérifier votre compte.</p>
+    <button id="close-tooltip" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Fermer</button>
+  </div>
+</div>
+
+    <div class="w-full max-w-md bg-white rounded-lg shadow-xl p-8 space-y-6">
+        <h1 class="text-3xl font-bold text-center text-dark-accent mb-6">G-work Authentification</h1>
+
+        <div id="message-area" class="hidden p-3 rounded-lg text-center text-sm font-medium"></div>
+
+       <div class="flex justify-center space-x-4 mb-6">
+    <button id="show-register-travailleur" class="px-4 py-2 rounded-md bg-primary-blue text-white hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:ring-opacity-50 transition" aria-label="Inscription Travailleur">
+        <i class="fas fa-user-plus"></i>
+    </button>
+    <button id="show-register-employeur" class="px-4 py-2 rounded-md bg-accent-green text-dark-accent hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-accent-green-light focus:ring-opacity-50 transition" aria-label="Inscription Employeur">
+        <i class="fas fa-building"></i>
+    </button>
+    <button id="show-login" class="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition" aria-label="Connexion">
+        <i class="fas fa-sign-in-alt"></i>
+    </button>
+    <button id="show-dashboard" class="px-4 py-2 rounded-md bg-gray-400 text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition" aria-label="Tableau de bord">
+        <i class="fas fa-tachometer-alt"></i>
+    </button>
+</div>
+
+       <form id="register-travailleur-form" class="space-y-4 hidden">
+  <h2 class="text-2xl font-semibold text-dark-accent text-center">Inscription Travailleur</h2>
+
+  <div>
+    <label for="reg-travailleur-email" class="block text-sm font-medium text-gray-700">Email</label>
+    <input type="email" id="reg-travailleur-email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
+  </div>
+
+  <div>
+    <label for="reg-travailleur-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+    <input type="password" id="reg-travailleur-password" name="mot_de_passe" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
+  </div>
+
+  <div>
+    <label for="reg-travailleur-nom" class="block text-sm font-medium text-gray-700">Nom</label>
+    <input type="text" id="reg-travailleur-nom" name="nom" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
+  </div>
+
+  <div>
+    <label for="reg-travailleur-prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+    <input type="text" id="reg-travailleur-prenom" name="prenom" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
+  </div>
+
+   <p class="text-sm text-gray-600 text-center">Cliquez sur la carte pour fournir votre localisation géographique.</p>
+    <div id="map" class="border border-gray-300 rounded-md h-64"></div>
+
+  <div>
+    <label for="reg-travailleur-contact" class="block text-sm font-medium text-gray-700">Coordonnées de contact</label>
+    <input type="text" id="reg-travailleur-contact" name="coordonnees_contact" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+  </div>
+
+<!-- CV (PDF uniquement) -->
+<div>
+  <label for="reg-travailleur-cv" class="block text-sm font-medium text-gray-700">CV (PDF)</label>
+  <input type="file" id="reg-travailleur-cv" name="cv" accept=".pdf" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+</div>
+
+<!-- Photo de profil (jpg, png) -->
+<div>
+  <label for="reg-travailleur-photo" class="block text-sm font-medium text-gray-700">Photo de profil</label>
+  <input type="file" id="reg-travailleur-photo" name="photo_profil" accept=".jpg,.jpeg,.png" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+</div>
+
+
+  <div>
+    <label for="reg-travailleur-dispo" class="block text-sm font-medium text-gray-700">Disponibilité</label>
+    <select id="reg-travailleur-dispo" name="disponibilite" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+      <option value="">-- Sélectionner --</option>
+      <option value="IMMEDIATE">Immédiate</option>
+      <option value="SOUS_15_JOURS">Sous 15 jours</option>
+      <option value="SOUS_1_MOIS">Sous 1 mois</option>
+       <option value="Non disponible">Non disponible</option>
+      
+
+    </select>
+  </div>
+  <div>
+  <label class="block text-sm font-medium text-gray-700">Type de contrat souhaité</label>
+ <div class="flex flex-wrap space-x-4">
+    <label><input type="checkbox" name="type_contrat_souhaite" value="CDI"> CDI</label>
+    <label><input type="checkbox" name="type_contrat_souhaite" value="CDD" checked> CDD</label>
+    <label><input type="checkbox" name="type_contrat_souhaite" value="Freelance"> Freelance</label>
+    <label><input type="checkbox" name="type_contrat_souhaite" value="STAGE"> Stage</label>
+</div>
+
+</div>
+
+
+  
+
+  
+
+  <div>
+    <label for="reg-travailleur-description" class="block text-sm font-medium text-gray-700">Description du profil</label>
+    <textarea id="reg-travailleur-description" name="description_profil" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"></textarea>
+  </div>
+ <div class="controls">
+        <button id="drawPolygon">🖊️ Dessiner Polygone</button>
+        <button id="editPolygon" disabled>✏️ Modifier Polygone</button>
+        <button id="clearPolygon" disabled>🗑️ Effacer Polygone</button>
+        <button id="showCoordinates">📋 Afficher Coordonnées</button>
+        <button id="exportCoordinates" disabled>📥 Exporter JSON</button>
+    </div>
+
+    <div id="map2"></div>
+
+    <div class="output-section">
+        <h3>Coordonnées du Polygone:</h3>
+        <div class="stats" id="polygonStats">Aucun polygone dessiné</div>
+        <div id="coordinatesOutput">Aucun polygone dessiné.</div>
+    </div>
+
+   
+  <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-blue hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue-light transition">S'inscrire (Travailleur)</button>
+</form>
+
+       <form id="register-employeur-form" class="space-y-4 hidden">
+    <h2 class="text-2xl font-semibold text-dark-accent text-center">Inscription Employeur</h2>
+    
+    <!-- Email -->
+    <div>
+        <label for="reg-employeur-email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="reg-employeur-email" name="email" required 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+    
+    <!-- Mot de passe -->
+    <div>
+        <label for="reg-employeur-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+        <input type="password" id="reg-employeur-password" name="mot_de_passe" required 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+    
+    <!-- Nom de l'entreprise -->
+    <div>
+        <label for="reg-employeur-nom-entreprise" class="block text-sm font-medium text-gray-700">Nom de l'entreprise</label>
+        <input type="text" id="reg-employeur-nom-entreprise" name="nom_entreprise" required 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+    
+    <!-- Secteur d'activité -->
+    <div>
+        <label for="reg-employeur-secteur-activite" class="block text-sm font-medium text-gray-700">Secteur d'activité</label>
+        <input type="text" id="reg-employeur-secteur-activite" name="secteur_activite" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Adresse physique de l'entreprise -->
+    <div>
+        <label for="reg-employeur-adresse-physique" class="block text-sm font-medium text-gray-700">Adresse physique de l'entreprise</label>
+        <input type="text" id="reg-employeur-adresse-physique" name="adresse_physique_entreprise" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Site web de l'entreprise -->
+    <div>
+        <label for="reg-employeur-site-web" class="block text-sm font-medium text-gray-700">Site web</label>
+        <input type="url" id="reg-employeur-site-web" name="site_web" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Logo de l'entreprise -->
+    <div>
+        <label for="reg-employeur-logo" class="block text-sm font-medium text-gray-700">Logo de l'entreprise</label>
+        <input type="file" id="reg-employeur-logo" name="logo_file" accept="image/*" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Présentation de l'entreprise -->
+    <div>
+        <label for="reg-employeur-presentation" class="block text-sm font-medium text-gray-700">Présentation de l'entreprise</label>
+        <textarea id="reg-employeur-presentation" name="presentation_entreprise" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+    <!-- Culture de l'entreprise -->
+    <div>
+        <label for="reg-employeur-culture" class="block text-sm font-medium text-gray-700">Culture de l'entreprise</label>
+        <textarea id="reg-employeur-culture" name="culture_entreprise" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+    <!-- Besoins spécifiques en main-d'œuvre -->
+    <div>
+        <label for="reg-employeur-besoins" class="block text-sm font-medium text-gray-700">Besoins spécifiques en main-d'œuvre</label>
+        <textarea id="reg-employeur-besoins" name="besoins_main_oeuvre_specifiques" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+    <!-- Informations de contact pour le recrutement -->
+    <div>
+        <label for="reg-employeur-contact" class="block text-sm font-medium text-gray-700">Informations de contact pour le recrutement</label>
+        <textarea id="reg-employeur-contact" name="informations_contact_recrutement" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+   <p class="text-sm text-gray-600 text-center">Cliquez sur la carte pour fournir votre localisation géographique.</p>
+    <div id="map3" class="border border-gray-300 rounded-md h-64"></div>
+
+    <!-- Envoi du formulaire -->
+    <div class="flex justify-center">
+        <button type="submit" 
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-dark-accent bg-accent-green hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-green-light transition">
+            S'inscrire (Employeur)
+        </button>
+    </div>
+</form>
+
+        <form id="login-form" class="space-y-4 hidden">
+            <h2 class="text-2xl font-semibold text-dark-accent text-center">Connexion</h2>
+            <div>
+                <label for="login-email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="login-email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="login-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                <input type="password" id="login-password" name="mot_de_passe" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+            </div>
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition">Se connecter</button>
+        </form>
+
+        <div id="dashboard-section" class="space-y-4 hidden">
+            <h2 class="text-2xl font-semibold text-dark-accent text-center">Tableau de bord</h2>
+            <div id="user-profile-info" class="bg-gray-50 p-4 rounded-md shadow-sm">
+                <h3 class="text-xl font-medium text-dark-accent">Mon Profil</h3>
+                <p><strong>ID:</strong> <span id="profile-id"></span></p>
+                <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                <p><strong>Email Vérifié:</strong> <span id="profile-verified"></span></p>
+                <p><strong>Admin:</strong> <span id="profile-admin"></span></p>
+            </div>
+
+            <div id="admin-actions" class="hidden bg-red-50 p-4 rounded-md shadow-sm">
+                <h3 class="text-xl font-medium text-red-800 mb-2">Actions Administrateur</h3>
+                <button id="list-users-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition">Lister tous les utilisateurs</button>
+                <div id="user-list-container" class="mt-4 space-y-2">
+                    </div>
+            </div>
+
+            <button id="logout-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition">Déconnexion</button>
+        </div>
+    </div>
+
+   <script src=" {% static 'script/script.js' %}">
+   
+</script>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-pMb+bM4xb8T4pHdM8YHMC2QYHNK3dc2zh0zU+bH4zY8="
+  crossorigin=""
+></script>
+
+</body>
+</html>
