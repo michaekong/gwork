@@ -17,7 +17,7 @@ SECRET_KEY = 'django-insecure-x_rd@@&n458dn1a^#@cqcm+w*ytgse70$im#0mwrvoyf0*cvq=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # À changer en False pour la production !
 
-ALLOWED_HOSTS = [] # Ajoutez les noms de domaine de votre production ici, ex: ['.render.com', 'votre-domaine.com']
+ALLOWED_HOSTS = ["*"] # Ajoutez les noms de domaine de votre production ici, ex: ['.render.com', 'votre-domaine.com']
 
 
 # Application definition
