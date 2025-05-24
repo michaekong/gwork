@@ -45,7 +45,7 @@ def send_verification_email(user_email: str, token: str):
     
     # Création du contenu HTML de l'email
     subject = 'Vérifiez votre adresse email pour G-work'
-    html_message = render_to_string('emails/verification_email.html', {
+    html_message = render_to_string('email_verification_template.html', {
         'verification_link': verification_link,
         'user_email': user_email,
     })
