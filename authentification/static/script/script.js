@@ -20,13 +20,17 @@
  document.addEventListener('DOMContentLoaded', () => {
       const map3 = L.map('map3').setView([3.8480, 11.5021], 13);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map3);
+   // Ajout de la couche de tuiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map3);
     const marker = L.marker([3.8480, 11.5021]).addTo(map3);
-    
+     // Ajout de la couche de tuiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map2);
 
     // Écouter l'événement de clic pour récupérer la latitude et la longitude
     map3.on('click', function(e) {
@@ -40,12 +44,16 @@ https://chatgpt.com/c/6830921b-92f4-800b-8c74-0b265383bf3c
 });
    document.addEventListener('DOMContentLoaded', () => {
       const map = L.map('map').setView([3.8480, 11.5021], 13);
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO',
       subdomains: 'abcd',
       maxZoom: 19
     }).addTo(map);
+     // Ajout de la couche de tuiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map2);
     const marker = L.marker([3.8480, 11.5021]).addTo(map);
     
 
