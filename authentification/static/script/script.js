@@ -1,40 +1,9 @@
- let currentStep = 1;
-  const steps = document.querySelectorAll('.step');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const stepIndicator = document.getElementById('step-indicator');
-
-  function showStep(step) {
-    steps.forEach((el, index) => {
-      el.classList.toggle('hidden', index !== step - 1);
-    });
-    prevBtn.classList.toggle('hidden', step === 1);
-    nextBtn.classList.toggle('hidden', step === steps.length);
-    submitBtn.classList.toggle('hidden', step !== steps.length);
-    stepIndicator.textContent = `Étape ${step} sur ${steps.length}`;
-  }
-
-  nextBtn.addEventListener('click', () => {
-    if (currentStep < steps.length) currentStep++;
-    showStep(currentStep);
-  });
-
-  prevBtn.addEventListener('click', () => {
-    if (currentStep > 1) currentStep--;
-    showStep(currentStep);
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    showStep(currentStep);
-  });
-function toggleSpinner(show) {
+ function toggleSpinner(show) {
     const spinner = document.getElementById('spinner');
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-    //const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
-    const API_BASE_URL = 'https://gwork.onrender.com/auth/auth'
+    const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
 
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
@@ -61,7 +30,7 @@ function toggleSpinner(show) {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
-        }).addTo(map2);
+        }).addTo(map3);
 
     // Écouter l'événement de clic pour récupérer la latitude et la longitude
     map3.on('click', function(e) {
@@ -84,7 +53,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
-        }).addTo(map2);
+        }).addTo(map);
     const marker = L.marker([3.8480, 11.5021]).addTo(map);
     
 
@@ -234,7 +203,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         if (cultureEntreprise) formData.append('culture_entreprise', cultureEntreprise);
         if (besoinsMainOeuvre) formData.append('besoins_main_oeuvre_specifiques', besoinsMainOeuvre);
         if (contactRecrutement) formData.append('informations_contact_recrutement', contactRecrutement);
-
+formData.append('est_entreprise_verifiee', false);
       
     }
 
@@ -243,9 +212,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             method: 'POST',
             body: formData,  // Laissez le navigateur gérer les headers (multipart/form-data)
         });
-       
-
-
+     
         const data = await response.json();
         toggleSpinner(false);
 
@@ -490,7 +457,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         const drawPolygonButton = document.getElementById('drawPolygon');
         const editPolygonButton = document.getElementById('editPolygon');
         const clearPolygonButton = document.getElementById('clearPolygon');
-        //const showCoordinatesButton = document.getElementById('showCoordinates');
+        const showCoordinatesButton = document.getElementById('showCoordinates');
         const exportCoordinatesButton = document.getElementById('exportCoordinates');
         const coordinatesOutput = document.getElementById('coordinatesOutput');
         const polygonStats = document.getElementById('polygonStats');
@@ -686,14 +653,14 @@ map2.on('draw:created', function (e) {
         });
 
         // Gestionnaire pour afficher les coordonnées
-       // showCoordinatesButton.addEventListener('click', function() {
-         //   if (POLYGON_COORDINATES.length > 0) {
-       //         alert('Coordonnées (stockées dans POLYGON_COORDINATES):\n' + 
-         //             JSON.stringify(POLYGON_COORDINATES, null, 2));
-         //   } else {
-        //        alert('Aucun polygone dessiné.');
-        //    }
-       // });
+        showCoordinatesButton.addEventListener('click', function() {
+            if (POLYGON_COORDINATES.length > 0) {
+                alert('Coordonnées (stockées dans POLYGON_COORDINATES):\n' + 
+                      JSON.stringify(POLYGON_COORDINATES, null, 2));
+            } else {
+                alert('Aucun polygone dessiné.');
+            }
+        });
 
         // Gestionnaire pour exporter les coordonnées
         exportCoordinatesButton.addEventListener('click', function() {
@@ -724,4 +691,3 @@ map2.on('draw:created', function (e) {
     // --- Initialisation ---
     // Afficher le formulaire de connexion par défaut au chargement
     showSection('login-form');
-   

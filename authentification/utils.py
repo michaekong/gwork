@@ -41,7 +41,7 @@ def send_verification_email(user_email: str, token: str):
     """
     Envoie un email de vérification à l'utilisateur.
     """
-    verification_link = f"{settings.FRONTEND_URL}/verify-email/?token={token}"
+    verification_link = f"{settings.FRONTEND_URL}/auth/verify-email/?token={token}"
     
     # Création du contenu HTML de l'email
     subject = 'Vérifiez votre adresse email pour G-work'

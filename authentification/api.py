@@ -49,7 +49,7 @@ def verify_email(request, token: str):
             user.est_email_verifie = True
             user.save()
             # Redirection vers la page de connexion
-            return HttpResponseRedirect(f"{settings.FRONTEND_URL}/login")
+            return HttpResponseRedirect(f"{settings.FRONTEND_URL}/home")
         else:
             raise errors.HttpError(400, "Votre email est déjà vérifié.")
     except Utilisateur.DoesNotExist:

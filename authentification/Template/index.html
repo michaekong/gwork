@@ -57,7 +57,7 @@
         }
          #map {
             height: 400px; /* Hauteur de la carte */
-    <script src="{% static 'script/script.js' %}"></script>        width: 100%; /* Largeur de la carte */
+            width: 100%; /* Largeur de la carte */
         }
 .spinner {
     display: none; /* Masqué par défaut */
@@ -75,7 +75,7 @@
     height: 100%;
     border-radius: 50%;
     position: absolute;
-    background: rgba(128, 0, 128, 0.7); /* Couleur violet */
+    background:rgb(126, 34, 206);
     animation: bounce 1.2s infinite ease-in-out;
 }
 
@@ -156,45 +156,176 @@
             font-weight: bold;
             color: #333;
         }
-.form-input {
-  @apply w-full px-4 py-2 mt-2 text-sm text-gray-700 placeholder-gray-400 
-    border border-gray-200 rounded-xl bg-white shadow-sm 
-    focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:border-primary-blue 
-    transition duration-300 ease-in-out;
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-light: #93c5fd;
+            --blue-bg: #e6f0ff;
+            --violet-intense: rgb(126, 34, 206);
+            --dark-accent: #1e1e2e;
+        }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--blue-bg);
+            color: var(--dark-accent);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--primary-blue-light);
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--violet-intense);
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-accent);
+            text-align: center;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-accent);
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--primary-blue-light);
+            border-radius: 12px;
+            background: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--violet-intense);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f7ff;
+            padding: 10px 16px;
+            border-radius: 9999px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .checkbox-group label:hover {
+            background: #e0f0ff;
+        }
+        .checkbox-group input {
+            width: auto;
+            margin: 0;
+        }
+        #map, #map2,#map3 {
+            height: 240px;
+            border-radius: 16px;
+            border: 2px solid var(--primary-blue-light);
+            margin-bottom: 24px;
+             height: 400px;
+            width: 100%;
+            background: #f8f9fa;
+        }
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .controls button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 9999px;
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+        .controls button:hover {
+            background: var(--violet-intense);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(126, 34, 206, 0.3);
+        }
+        .controls button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .output-section {
+            background: #f0f7ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .output-section h3 {
+            margin-top: 0;
+            color: var(--dark-accent);
+            font-weight: 600;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 9999px;
+            background: var(--violet-intense);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(126, 34, 206, 0.3);
+        }
+        .submit-btn:hover {
+            background: rgba(126, 34, 206, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 34, 206, 0.4);
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-sm {
+            font-size: 0.9rem;
+        }
+        .text-gray-600 {
+            color: #6b7280;
+        }
+        .output-section {
+  display: none !important;
 }
 
-.form-textarea {
-  @apply w-full px-4 py-2 mt-2 text-sm text-gray-700 placeholder-gray-400 
-    border border-gray-200 rounded-xl bg-white shadow-sm resize-none 
-    focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:border-primary-blue 
-    transition duration-300 ease-in-out;
-}
-
-.form-select {
-  @apply w-full px-4 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-200 
-    rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-blue-light 
-    focus:border-primary-blue transition duration-300 ease-in-out;
-}
-
-.form-checkbox-group {
-  @apply flex flex-wrap gap-4 mt-2;
-}
-
-.form-checkbox-group label {
-  @apply inline-flex items-center gap-2 text-sm text-gray-700;
-}
-
-.form-section {
-  @apply bg-white p-4 rounded-2xl shadow-lg;
-}
-
-.form-heading {
-  @apply text-2xl font-semibold text-primary-blue text-center mb-6;
-}
-
-
-
-
+        
     </style>
 </head>
 
@@ -218,10 +349,10 @@
 
         <div id="message-area" class="hidden p-3 rounded-lg text-center text-sm font-medium"></div>
 
-   <div class="flex gap-4">
+  <div class="flex flex-wrap gap-4 justify-center">
     <!-- Inscription Travailleur -->
     <button id="show-register-travailleur"
-        class="flex flex-col items-center px-4 py-3 rounded-md bg-primary-blue text-white shadow hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:ring-opacity-50 transition"
+        class="w-48 flex flex-col items-center px-4 py-3 rounded-md bg-primary-blue text-white shadow hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-primary-blue-light focus:ring-opacity-50 transition"
         aria-label="Inscription Travailleur"
         title="Inscription Travailleur">
         <i class="fas fa-user-tie fa-2x mb-2"></i>
@@ -230,7 +361,7 @@
 
     <!-- Inscription Employeur -->
     <button id="show-register-employeur"
-        class="flex flex-col items-center px-4 py-3 rounded-md bg-accent-green text-dark-accent shadow hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-accent-green-light focus:ring-opacity-50 transition"
+        class="w-48 flex flex-col items-center px-4 py-3 rounded-md bg-accent-green text-dark-accent shadow hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-accent-green-light focus:ring-opacity-50 transition"
         aria-label="Inscription Employeur"
         title="Inscription Employeur">
         <i class="fas fa-briefcase fa-2x mb-2"></i>
@@ -239,7 +370,7 @@
 
     <!-- Connexion -->
     <button id="show-login"
-        class="flex flex-col items-center px-4 py-3 rounded-md bg-purple-600 text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition"
+        class="w-48 flex flex-col items-center px-4 py-3 rounded-md bg-purple-600 text-white shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition"
         aria-label="Connexion"
         title="Connexion">
         <i class="fas fa-sign-in-alt fa-2x mb-2"></i>
@@ -248,7 +379,7 @@
 
     <!-- Tableau de bord -->
     <button id="show-dashboard"
-        class="flex flex-col items-center px-4 py-3 rounded-md bg-gray-400 text-white shadow hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition"
+        class="w-48 flex flex-col items-center px-4 py-3 rounded-md bg-gray-400 text-white shadow hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition"
         aria-label="Tableau de bord"
         title="Tableau de bord">
         <i class="fas fa-chart-line fa-2x mb-2"></i>
@@ -257,140 +388,193 @@
 </div>
 
 
-      <form id="register-travailleur-form" class="space-y-6 hidden">
-  <h2 class="form-heading">Inscription Travailleur</h2>
+       <form id="register-travailleur-form" class="space-y-4 hidden">
+  <h2 class="text-2xl font-semibold text-dark-accent text-center">Inscription Travailleur</h2>
 
-  <div class="form-section">
+  <div>
     <label for="reg-travailleur-email" class="block text-sm font-medium text-gray-700">Email</label>
-    <input type="email" id="reg-travailleur-email" name="email" required class="form-input">
+    <input type="email" id="reg-travailleur-email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
   </div>
 
-  <div class="form-section">
+  <div>
     <label for="reg-travailleur-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-    <input type="password" id="reg-travailleur-password" name="mot_de_passe" required class="form-input">
+    <input type="password" id="reg-travailleur-password" name="mot_de_passe" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
   </div>
 
-  <div class="form-section">
+  <div>
     <label for="reg-travailleur-nom" class="block text-sm font-medium text-gray-700">Nom</label>
-    <input type="text" id="reg-travailleur-nom" name="nom" required class="form-input">
+    <input type="text" id="reg-travailleur-nom" name="nom" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
   </div>
 
-  <div class="form-section">
+  <div>
     <label for="reg-travailleur-prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
-    <input type="text" id="reg-travailleur-prenom" name="prenom" required class="form-input">
+    <input type="text" id="reg-travailleur-prenom" name="prenom" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-blue-light focus:border-primary-blue sm:text-sm">
   </div>
 
-  <div class="form-section">
-    <p class="text-sm text-gray-600 text-center mb-2">Cliquez sur la carte pour fournir votre localisation géographique.</p>
-    <div id="map" class="border border-gray-300 rounded-md h-64 shadow-inner"></div>
-  </div>
+   <p class="text-sm text-gray-600 text-center">Cliquez sur la carte pour fournir votre localisation géographique.</p>
+    <div id="map" class="border border-gray-300 rounded-md h-64"></div>
 
-  <div class="form-section">
+  <div>
     <label for="reg-travailleur-contact" class="block text-sm font-medium text-gray-700">Coordonnées de contact</label>
-    <input type="text" id="reg-travailleur-contact" name="coordonnees_contact" class="form-input">
+    <input type="text" id="reg-travailleur-contact" name="coordonnees_contact" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
   </div>
 
-  <div class="form-section">
-    <label for="reg-travailleur-cv" class="block text-sm font-medium text-gray-700">CV (PDF)</label>
-    <input type="file" id="reg-travailleur-cv" name="cv" accept=".pdf" class="form-input">
-  </div>
+<!-- CV (PDF uniquement) -->
+<div>
+  <label for="reg-travailleur-cv" class="block text-sm font-medium text-gray-700">CV (PDF)</label>
+  <input type="file" id="reg-travailleur-cv" name="cv" accept=".pdf" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+</div>
 
-  <div class="form-section">
-    <label for="reg-travailleur-photo" class="block text-sm font-medium text-gray-700">Photo de profil</label>
-    <input type="file" id="reg-travailleur-photo" name="photo_profil" accept=".jpg,.jpeg,.png" class="form-input">
-  </div>
+<!-- Photo de profil (jpg, png) -->
+<div>
+  <label for="reg-travailleur-photo" class="block text-sm font-medium text-gray-700">Photo de profil</label>
+  <input type="file" id="reg-travailleur-photo" name="photo_profil" accept=".jpg,.jpeg,.png" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
+</div>
 
-  <div class="form-section">
+
+  <div>
     <label for="reg-travailleur-dispo" class="block text-sm font-medium text-gray-700">Disponibilité</label>
-    <select id="reg-travailleur-dispo" name="disponibilite" class="form-select">
+    <select id="reg-travailleur-dispo" name="disponibilite" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm">
       <option value="">-- Sélectionner --</option>
       <option value="IMMEDIATE">Immédiate</option>
       <option value="SOUS_15_JOURS">Sous 15 jours</option>
       <option value="SOUS_1_MOIS">Sous 1 mois</option>
-      <option value="Non disponible">Non disponible</option>
+       <option value="Non disponible">Non disponible</option>
+      
+
     </select>
   </div>
+  <div>
+  <label class="block text-sm font-medium text-gray-700">Type de contrat souhaité</label>
+ <div class="flex flex-wrap space-x-4">
+    <label><input type="checkbox" name="type_contrat_souhaite" value="CDI"> CDI</label>
+    <label><input type="checkbox" name="type_contrat_souhaite" value="CDD" checked> CDD</label>
+    <label><input type="checkbox" name="type_contrat_souhaite" value="Freelance"> Freelance</label>
+    <label><input type="checkbox" name="type_contrat_souhaite" value="STAGE"> Stage</label>
+</div>
 
-  <div class="form-section">
-    <label class="block text-sm font-medium text-gray-700">Type de contrat souhaité</label>
-    <div class="form-checkbox-group">
-      <label><input type="checkbox" name="type_contrat_souhaite" value="CDI" class="form-checkbox">CDI</label>
-      <label><input type="checkbox" name="type_contrat_souhaite" value="CDD" checked class="form-checkbox">CDD</label>
-      <label><input type="checkbox" name="type_contrat_souhaite" value="Freelance" class="form-checkbox">Freelance</label>
-      <label><input type="checkbox" name="type_contrat_souhaite" value="STAGE" class="form-checkbox">Stage</label>
-    </div>
-  </div>
+</div>
 
-  <div class="form-section">
+
+  
+
+  
+
+  <div>
     <label for="reg-travailleur-description" class="block text-sm font-medium text-gray-700">Description du profil</label>
-    <textarea id="reg-travailleur-description" name="description_profil" rows="4" class="form-textarea"></textarea>
+    <textarea id="reg-travailleur-description" name="description_profil" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"></textarea>
   </div>
-
-  <div class="form-section">
-    <div class="controls space-y-2">
-      <button id="drawPolygon" type="button" class="text-sm text-primary-blue hover:underline">🖊️ Dessiner votre zone de préférence</button>
-      <button id="editPolygon" type="button" disabled class="text-sm text-yellow-500 hover:underline">✏️ Modifier la zone</button>
-      <button id="clearPolygon" type="button" disabled class="text-sm text-red-500 hover:underline">🗑️ Effacer la zone</button>
+ <div class="controls"><label for="reg-travailleur-description" class="block text-sm font-medium text-gray-700">votre zone de travaille de preferance</label>
+        <button id="drawPolygon">🖊️ Dessiner </button>
+        <button id="editPolygon" disabled>✏️ Modifier </button>
+        <button id="clearPolygon" disabled>🗑️ Effacer </button>
+        <button id="showCoordinates"></button>
+        <button id="exportCoordinates" disabled></button>
     </div>
-    <div id="map2" class="mt-2 h-64 border border-gray-300 rounded-md shadow-inner"></div>
-  </div>
 
-  <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-primary-blue hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue-light transition">
-    S'inscrire (Travailleur)
-  </button>
-</form>
-      <form id="register-employeur-form" class="bg-white p-6 rounded-xl shadow-lg max-w-2xl mx-auto">
-  <!-- Étapes -->
-  <div class="flex justify-between mb-6 text-sm font-semibold text-gray-600">
-    <span id="step-indicator">Étape 1 sur 3</span>
-  </div>
+    <div id="map2"></div>
 
-  <!-- Étape 1 -->
-  <div class="step" id="step-1">
-    <h2 class="text-2xl font-bold text-accent-green mb-4">Compte & Entreprise</h2>
-    
-    <div class="space-y-4">
-      <input type="email" name="email" placeholder="Email" required class="form-input">
-      <input type="password" name="mot_de_passe" placeholder="Mot de passe" required class="form-input">
-      <input type="text" name="nom_entreprise" placeholder="Nom de l'entreprise" required class="form-input">
-      <input type="text" name="secteur_activite" placeholder="Secteur d'activité" class="form-input">
-      <input type="text" name="adresse_physique_entreprise" placeholder="Adresse physique" class="form-input">
-      <input type="url" name="site_web" placeholder="Site web" class="form-input">
-      <input type="file" name="logo_file" accept="image/*" class="form-input">
+    <div class="output-section">
+        <h3>Coordonnées du Polygone:</h3>
+        <div class="stats" id="polygonStats">Aucun polygone dessiné</div>
+        <div id="coordinatesOutput">Aucun polygone dessiné.</div>
     </div>
-  </div>
 
-  <!-- Étape 2 -->
-  <div class="step hidden" id="step-2">
-    <h2 class="text-2xl font-bold text-accent-green mb-4">Présentation & Recrutement</h2>
-    
-    <div class="space-y-4">
-      <textarea name="presentation_entreprise" placeholder="Présentation" rows="3" class="form-textarea"></textarea>
-      <textarea name="culture_entreprise" placeholder="Culture d'entreprise" rows="3" class="form-textarea"></textarea>
-      <textarea name="besoins_main_oeuvre_specifiques" placeholder="Besoins spécifiques" rows="3" class="form-textarea"></textarea>
-      <textarea name="informations_contact_recrutement" placeholder="Contact pour le recrutement" rows="3" class="form-textarea"></textarea>
-    </div>
-  </div>
-
-  <!-- Étape 3 -->
-  <div class="step hidden" id="step-3">
-    <h2 class="text-2xl font-bold text-accent-green mb-4">Localisation</h2>
-
-    <p class="text-sm text-gray-600 mb-2">Cliquez sur la carte pour fournir votre localisation.</p>
-    <div id="map3" class="border rounded-lg h-64 shadow-inner mb-4"></div>
-
-    <input type="hidden" name="latitude" id="latitude">
-    <input type="hidden" name="longitude" id="longitude">
-  </div>
-
-  <!-- Navigation -->
-  <div class="flex justify-between mt-6">
-    <button type="button" id="prevBtn" class="hidden text-sm font-semibold text-gray-600 hover:underline">← Précédent</button>
-    <button type="button" id="nextBtn" class="text-sm font-semibold text-accent-green">Suivant →</button>
-    <button type="submit" id="submitBtn" class="hidden bg-accent-green text-white px-4 py-2 rounded shadow">S'inscrire</button>
-  </div>
+   
+  <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-blue hover:bg-primary-blue-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue-light transition">S'inscrire (Travailleur)</button>
 </form>
 
+       <form id="register-employeur-form" class="space-y-4 hidden">
+    <h2 class="text-2xl font-semibold text-dark-accent text-center">Inscription Employeur</h2>
+    
+    <!-- Email -->
+    <div>
+        <label for="reg-employeur-email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="reg-employeur-email" name="email" required 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+    
+    <!-- Mot de passe -->
+    <div>
+        <label for="reg-employeur-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+        <input type="password" id="reg-employeur-password" name="mot_de_passe" required 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+    
+    <!-- Nom de l'entreprise -->
+    <div>
+        <label for="reg-employeur-nom-entreprise" class="block text-sm font-medium text-gray-700">Nom de l'entreprise</label>
+        <input type="text" id="reg-employeur-nom-entreprise" name="nom_entreprise" required 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+    
+    <!-- Secteur d'activité -->
+    <div>
+        <label for="reg-employeur-secteur-activite" class="block text-sm font-medium text-gray-700">Secteur d'activité</label>
+        <input type="text" id="reg-employeur-secteur-activite" name="secteur_activite" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Adresse physique de l'entreprise -->
+    <div>
+        <label for="reg-employeur-adresse-physique" class="block text-sm font-medium text-gray-700">Adresse physique de l'entreprise</label>
+        <input type="text" id="reg-employeur-adresse-physique" name="adresse_physique_entreprise" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Site web de l'entreprise -->
+    <div>
+        <label for="reg-employeur-site-web" class="block text-sm font-medium text-gray-700">Site web</label>
+        <input type="url" id="reg-employeur-site-web" name="site_web" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Logo de l'entreprise -->
+    <div>
+        <label for="reg-employeur-logo" class="block text-sm font-medium text-gray-700">Logo de l'entreprise</label>
+        <input type="file" id="reg-employeur-logo" name="logo_file" accept="image/*" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm">
+    </div>
+
+    <!-- Présentation de l'entreprise -->
+    <div>
+        <label for="reg-employeur-presentation" class="block text-sm font-medium text-gray-700">Présentation de l'entreprise</label>
+        <textarea id="reg-employeur-presentation" name="presentation_entreprise" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+    <!-- Culture de l'entreprise -->
+    <div>
+        <label for="reg-employeur-culture" class="block text-sm font-medium text-gray-700">Culture de l'entreprise</label>
+        <textarea id="reg-employeur-culture" name="culture_entreprise" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+    <!-- Besoins spécifiques en main-d'œuvre -->
+    <div>
+        <label for="reg-employeur-besoins" class="block text-sm font-medium text-gray-700">Besoins spécifiques en main-d'œuvre</label>
+        <textarea id="reg-employeur-besoins" name="besoins_main_oeuvre_specifiques" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+    <!-- Informations de contact pour le recrutement -->
+    <div>
+        <label for="reg-employeur-contact" class="block text-sm font-medium text-gray-700">Informations de contact pour le recrutement</label>
+        <textarea id="reg-employeur-contact" name="informations_contact_recrutement" rows="4" 
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent-green-light focus:border-accent-green sm:text-sm"></textarea>
+    </div>
+
+   <p class="text-sm text-gray-600 text-center">Cliquez sur la carte pour fournir votre localisation géographique.</p>
+    <div id="map3" class="border border-gray-300 rounded-md h-64"></div>
+
+    <!-- Envoi du formulaire -->
+    <div class="flex justify-center">
+        <button type="submit" 
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-dark-accent bg-accent-green hover:bg-accent-green-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-green-light transition">
+            S'inscrire (Employeur)
+        </button>
+    </div>
+</form>
 
         <form id="login-form" class="space-y-4 hidden">
             <h2 class="text-2xl font-semibold text-dark-accent text-center">Connexion</h2>
