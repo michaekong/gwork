@@ -4,6 +4,7 @@ bcrypt==4.3.0
 cffi==1.17.1
 cryptography==45.0.2
 Django==5.2.1
+django-cors-headers==4.7.0
 django-ninja==1.4.1
 django_extra==0.3
 dnspython==2.7.0
