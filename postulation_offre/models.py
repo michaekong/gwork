@@ -19,7 +19,7 @@ class OffreEmploi(models.Model):
         ('Freelance', 'Freelance'),
     ]
 
-    employeur = models.ForeignKey(Employeur, on_delete=models.CASCADE, related_name="offres")
+    employeur = models.ForeignKey(Travailleur, on_delete=models.CASCADE, related_name="offres")
     titre = models.CharField(max_length=255)
     description = models.TextField()
     type_contrat = models.CharField(max_length=50, choices=TYPE_CONTRAT_CHOICES)

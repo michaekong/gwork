@@ -25,7 +25,7 @@ def list_competences(request):
 # 🔹 3. Créer une offre d'emploi
 @router.post("/offres", response=OffreEmploiOut)
 def create_offre(request, payload: OffreEmploiIn, employeur_id: int):
-    employeur = get_object_or_404(Employeur, id=employeur_id)
+    employeur = get_object_or_404(Travailleur, id=employeur_id)
     offre = OffreEmploi.objects.create(
         employeur=employeur,
         titre=payload.titre,

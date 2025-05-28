@@ -3,8 +3,8 @@
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-    // let API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
-       const API_BASE_URL = 'https://gwork.onrender.com/auth/auth'
+    //const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
+     const API_BASE_URL = 'https://gwork.onrender.com/auth/auth'
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
 
