@@ -18,7 +18,7 @@ from .schemas import (
     TokenResponse,
     UserProfileResponse,
     MessageResponse,
-    UserListResponse
+    UserListResponse,Userprofile
 )
 # Import de la sécurité (JWTAuth)
 from .security import JWTAuth
@@ -106,8 +106,13 @@ def register_travailleur(
     # Gérer les fichiers : stockage et génération des URL
     photo_url, cv_url = None, None
     if photo_profil:
+    # Sauvegarde de la photo uploadée par l'utilisateur
         path = default_storage.save(f"photos_profil/{photo_profil.name}", ContentFile(photo_profil.read()))
         photo_url = default_storage.url(path)
+    else:
+    # Utilisation d'une image par défaut déjà présente dans le dossier media
+        photo_url = default_storage.url("photos_profil/baseprofile.png")
+    
     if cv:
         path = default_storage.save(f"cv/{cv.name}", ContentFile(cv.read()))
         cv_url = default_storage.url(path)
@@ -224,6 +229,7 @@ def login(request, payload: EstablishmentAuthPayload):
         print(f"Utilisateur trouvé. Hachage BD: {user.password}")
         print(f"Mot de passe fourni: {payload.mot_de_passe}")
         print(f"Vérification du mot de passe: {check_password(payload.mot_de_passe, user.password)}")
+        
     else:
         print("Utilisateur non trouvé.")
     # --- FIN DÉBOGAGE ---
@@ -265,16 +271,38 @@ def logout(request):
         raise errors.HttpError(400, "Token déjà invalide ou non fourni.")
 
 
-@api.get("/auth/me", response=UserProfileResponse, auth=JWTAuth())
+@api.get("/auth/me", response=Userprofile, auth=JWTAuth())
 def get_current_user_profile(request):
-    """
-    Récupère les informations du profil de l'utilisateur actuellement authentifié.
-    """
-    user = request.auth # L'objet Utilisateur est fourni par JWTAuth
+    user = request.auth
     if not user:
-        raise errors.HttpError(401, "Non authentifié.")
-    
-    return user # Retourne l'objet Utilisateur, Ninja le sérialisera via UserProfileResponse
+        raise errors.HttpError(401, "Non authentifié")
+
+    try:
+        travailleur = Travailleur.objects.get(id_travailleur=user)
+    except Travailleur.DoesNotExist:
+        raise errors.HttpError(404, "Profil travailleur introuvable.")
+
+    return Userprofile(
+               id_utilisateur=user.id_utilisateur,
+        nom=travailleur.nom,
+        prenom=travailleur.prenom,
+        coordonnees_contact=travailleur.coordonnees_contact,
+        disponibilite=travailleur.disponibilite,
+ zone_preference=[
+        [point["latitude"], point["longitude"]]
+        for point in travailleur.zone_preference
+    ],
+        type_contrat_souhaite=travailleur.type_contrat_souhaite,
+        description_profil=travailleur.description_profil,
+        cv=request.build_absolute_uri(travailleur.cv.url) if travailleur.cv else None,
+        photo_profil=request.build_absolute_uri(travailleur.photo_profil.url) if travailleur.photo_profil else None,
+        email=user.email,
+        est_email_verifie=user.est_email_verifie,
+        est_administrateur=user.est_administrateur,
+        longitude=user.longitude,
+        latitude=user.latitude,
+    )
+
 
 # --- Endpoints de Gestion des Utilisateurs (Admin seulement) ---
 

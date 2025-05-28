@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobConnect - Plateforme d'Emploi</title>
+    <title>GWORK - Plateforme d'Emploi</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -66,8 +66,32 @@
         }
         
         .sidebar {
+            width: 16rem; /* 256px */
             min-height: 100vh;
             background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50;
+        }
+        
+        /* Sidebar hidden by default on small screens */
+        @media (max-width: 1023px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        
+        /* Sidebar visible on large screens */
+        @media (min-width: 1024px) {
+            .sidebar {
+                position: sticky;
+                top: 0;
+            }
         }
         
         .message-bubble {
@@ -137,9 +161,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0">
+                    <!-- Hamburger Menu for Mobile -->
+                    <button id="sidebar-toggle" class="lg:hidden p-2 text-gray-600 hover:text-purple-600 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex-shrink-0 ml-2">
                         <h1 class="text-2xl font-bold text-purple-600">
-                            <i class="fas fa-briefcase mr-2"></i>JobConnect
+                            <i class="fas fa-briefcase mr-2"></i>GWORK
                         </h1>
                     </div>
                     <div class="ml-10 flex items-baseline space-x-4">
@@ -175,13 +203,24 @@
 
     <div class="flex">
         <!-- Sidebar -->
-        <div class="sidebar w-64 text-white">
+        <div id="sidebar" class="sidebar text-white hidden lg:block">
             <div class="p-6">
+                <!-- Close Button for Mobile -->
+                <button id="sidebar-close" class="lg:hidden flex justify-end w-full text-white mb-4">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
                 <div class="flex items-center mb-6">
-                    <img class="h-12 w-12 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Profile">
+                    <img class="h-12 w-12 rounded-full border-2 border-white" id="profile-photo" alt="Profile">
                     <div class="ml-3">
-                        <p class="text-sm font-semibold">Jean Dupont</p>
-                        <p class="text-xs opacity-75">Travailleur</p>
+                        <p class="text-sm font-semibold" id="profile-nom">cggf</p>
+                        <p class="text-xs opacity-75" id="profile-prenom"></p>
+                        <p class="text-xs" id="profile-email"></p>
+                        <p class="text-xs" id="profile-contact"></p>
+                        <p class="text-xs" id="profile-disponibilite"></p>
+                        <p class="text-xs" id="profile-description"></p>
+                        <p class="text-xs" id="profile-contrats"></p>
+                        <ul class="text-xs" id="profile-zone"></ul>
+                        <p class="text-xs" id="profile-cv"></p>
                     </div>
                 </div>
                 
@@ -216,7 +255,7 @@
             <div id="dashboard-section" class="p-6">
                 <div class="mb-6">
                     <h2 class="text-3xl font-bold text-gray-900">Tableau de bord</h2>
-                    <p class="text-gray-600">Bienvenue sur JobConnect, votre plateforme d'emploi</p>
+                    <p class="text-gray-600">Bienvenue sur GWORK, votre plateforme d'emploi</p>
                 </div>
 
                 <!-- Stats Cards -->
@@ -451,7 +490,7 @@
                         </div>
                     </div>
 
-                    <!-- More job cards... -->
+                    <!-- Job Card 3 -->
                     <div class="job-card bg-white p-6 rounded-xl shadow-sm">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center">
@@ -490,6 +529,7 @@
                         </div>
                     </div>
 
+                    <!-- Job Card 4 -->
                     <div class="job-card bg-white p-6 rounded-xl shadow-sm">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center">
@@ -536,16 +576,68 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Map Section -->
+            <div id="map-section" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Carte des Emplois</h2>
+                    <p class="text-gray-600">Trouvez des opportunités près de chez vous</p>
+                </div>
+                <div id="map" class="map-container"></div>
+            </div>
+
+            <!-- Messages Section -->
+            <div id="messages-section" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Messages</h2>
+                    <p class="text-gray-600">Gérez vos conversations avec les employeurs</p>
+                </div>
+                <div class="chat-container bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="h-80 overflow-y-auto custom-scrollbar p-4">
+                        <div class="message-bubble message-received p-3 rounded-lg mb-3">
+                            <p class="text-sm">Bonjour, nous avons reçu votre candidature pour le poste de Développeur Frontend.</p>
+                            <span class="text-xs text-gray-400">Marie Martin - 10:30</span>
+                        </div>
+                        <div class="message-bubble message-sent p-3 rounded-lg mb-3">
+                            <p class="text-sm">Merci pour votre retour ! Quand puis-je passer un entretien ?</p>
+                            <span class="text-xs text-gray-400">Vous - 10:35</span>
+                        </div>
+                        <div class="message-bubble message-received p-3 rounded-lg mb-3">
+                            <p class="text-sm">Nous pouvons organiser un entretien demain à 14h. Cela vous convient-il ?</p>
+                            <span class="text-xs text-gray-400">Marie Martin - 10:40</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center">
+                            <input type="text" id="message-input" placeholder="Écrivez un message..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <button class="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-purple-100 py-6">
+    <footer class="bg-white border-t border-purple-200 py-6">
         <div class="max-w-7xl mx-auto text-center text-gray-600">
-            <p>&copy; 2023 JobConnect. Tous droits réservés.</p>
-            <div class="flex justify-center space-x-4">
-                <a href="#" class="text-gray-600 hover:text-purple-600">Politique de confidentialité</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600">Conditions d'utilisation</a>
+            <p class="text-sm">© 2023 GWORK. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition">Politique de confidentialité</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition">Conditions d'utilisation</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition">À propos</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition">Contact</a>
+            </div>
+            <div class="mt-4">
+                <span class="text-gray-500">Suivez-nous :</span>
+                <div class="flex justify-center space-x-4 mt-2">
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
         </div>
     </footer>
@@ -553,12 +645,274 @@
     <!-- Leaflet JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
-        // Initialiser la carte, etc.
-        const map = L.map('map').setView([3.8480, 11.5021], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        // Base URL de votre API Django Ninja
+        const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // URL locale
+        //const API_BASE_URL = 'https://gwork.onrender.com/auth/auth';
+
+        // Map and layers
+        let map;
+        let userMarker;
+        let preferredZonePolygon;
+        let data;
+
+        // Initialize map
+        function initializeMap(longitude,latitude) {
+
+            if (!map) {
+                map = L.map('map').setView([longitude, latitude], 13); // Default to Yaoundé
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+        }
+
+        // Update map with user location and preferred zone
+        function updateMapWithUserData(data,longitude,latitude) {
+            if (!map) {
+                initializeMap(longitude,latitude);
+            }
+
+            // Remove existing marker and polygon if they exist
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+            if (preferredZonePolygon) {
+                map.removeLayer(preferredZonePolygon);
+            }
+
+            // Check if zone_preference exists and is not empty
+            if (data.zone_preference && data.zone_preference.length > 0) {
+                // Plot user location (first coordinate)
+                const primaryLocation = data.zone_preference[0]; // [latitude, longitude]
+                if (primaryLocation && primaryLocation.length === 2) {
+                    userMarker = L.marker([primaryLocation[0], primaryLocation[1]])
+                        .addTo(map)
+                        .bindPopup(`<b>${data.nom} ${data.prenom}</b><br>Votre position`)
+                        .openPopup();
+
+                    // Center map on user location
+                    map.setView([primaryLocation[0], primaryLocation[1]], 13);
+                }
+
+                // Plot preferred zone as a polygon
+                if (data.zone_preference.length > 2) { // Need at least 3 points for a polygon
+                    const latLngs = data.zone_preference.map(coord => [coord[0], coord[1]]);
+                    preferredZonePolygon = L.polygon(latLngs, {
+                        color: '#8b5cf6',
+                        fillColor: '#8b5cf6',
+                        fillOpacity: 0.2
+                    }).addTo(map)
+                      .bindPopup('Votre zone de préférence');
+
+                    // Fit map to polygon bounds
+                    map.fitBounds(preferredZonePolygon.getBounds());
+                }
+            } else {
+                console.warn('No valid zone_preference data found');
+            }
+        }
+
+        function getAuthToken() {
+            return localStorage.getItem('access_token');
+        }
+
+        async function fetchUserProfile() {
+            const token = getAuthToken();
+            
+            if (!token) {
+                showMessage('Veuillez vous connecter pour voir votre profil.', 'info');
+                showSection('login-form');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                const data = await response.json();
+alert(data.latitude)
+                if (response.ok) {
+                    // Update profile information in sidebar
+                    document.getElementById('profile-nom').textContent = data.nom || 'N/A';
+                    document.getElementById('profile-prenom').textContent = data.prenom || 'N/A';
+                    document.getElementById('profile-email').textContent = data.email || 'N/A';
+                    document.getElementById('profile-contact').textContent = data.coordonnees_contact || 'Non renseigné';
+                    document.getElementById('profile-disponibilite').textContent = data.disponibilite || 'Non spécifié';
+                    document.getElementById('profile-description').textContent = data.description_profil || 'Aucune description';
+                    
+                    // CV
+                    const cvElement = document.getElementById('profile-cv');
+                    if (data.cv) {
+                        cvElement.innerHTML = `<a href="${data.cv}" target="_blank">Voir le CV</a>`;
+                    } else {
+                        cvElement.textContent = 'CV non disponible';
+                    }
+                    
+                    // Photo de profil
+                    const photoElement = document.getElementById('profile-photo');
+                    if (data.photo_profil) {
+                        photoElement.src = data.photo_profil;
+                        photoElement.classList.remove('hidden');
+                    } else {
+                        photoElement.classList.add('hidden');
+                    }
+
+                    // Contrats souhaités
+                    document.getElementById('profile-contrats').textContent = data.type_contrat_souhaite?.join(', ') || 'Non spécifié';
+
+                    // Zone de préférence
+                    const zoneList = document.getElementById('profile-zone');
+                    zoneList.innerHTML = '';
+                    if (data.zone_preference && data.zone_preference.length > 0) {
+                        data.zone_preference.forEach((point, index) => {
+                            const item = document.createElement('li');
+                            item.textContent = `Point ${index + 1} : ${point[0]}, ${point[1]}`;
+                            zoneList.appendChild(item);
+                        });
+                    } else {
+                        const item = document.createElement('li');
+                        item.textContent = 'Aucune zone spécifiée';
+                        zoneList.appendChild(item);
+                    }
+
+                    // Update map with user data
+                    updateMapWithUserData(data,data.longitude,data.latitude);
+                } else {
+                    showMessage(`Erreur de chargement du profil: ${data.detail || JSON.stringify(data)}`, 'error');
+                    removeAuthToken();
+                    showSection('login-form');
+                }
+            } catch (error) {
+                console.error('Erreur réseau ou inattendue:', error);
+                showMessage('Une erreur est survenue lors du chargement du profil.', 'error');
+                removeAuthToken();
+                showSection('login-form');
+            }
+        }
+
+        async function updateProfile(data) {
+            const token = getAuthToken();
+            try {
+                const response = await fetch(`${API_BASE_URL}/me/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showMessage('Profil mis à jour avec succès.', 'success');
+                    fetchUserProfile();
+                } else {
+                    const errData = await response.json();
+                    showMessage(`Erreur: ${errData.detail}`, 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showMessage('Erreur réseau lors de la mise à jour.', 'error');
+            }
+        }
+
+        // Show a message (placeholder function, implement as needed)
+        function showMessage(message, type) {
+            console.log(`[${type}] ${message}`);
+            // Add your preferred notification system here (e.g., toast or alert)
+        }
+
+        // Remove auth token (placeholder function, implement as needed)
+        function removeAuthToken() {
+            localStorage.removeItem('access_token');
+        }
+
+        // Sidebar toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+
+        if (sidebarToggle && sidebarClose && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                sidebar.classList.remove('hidden');
+            });
+
+            sidebarClose.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('hidden');
+            });
+        }
+
+        // Navigation event listeners
+        document.getElementById('nav-dashboard').addEventListener('click', () => {
+            showSection('dashboard-section');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('nav-jobs').addEventListener('click', () => {
+            showSection('jobs-section');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('nav-map').addEventListener('click', () => {
+            showSection('map-section');
+            initializeMap();
+            if (window.innerWidth < 1024) {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('nav-messages').addEventListener('click', () => {
+            showSection('messages-section');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.remove('open');
+                sidebar.classList.add('hidden');
+            }
+        });
+
+        function showSection(sectionId) {
+            const sections = ['dashboard-section', 'jobs-section', 'map-section', 'messages-section'];
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element) {
+                    element.classList.add('hidden');
+                }
+            });
+            
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.remove('hidden');
+            }
+
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('text-purple-700', 'bg-purple-50');
+                btn.classList.add('text-gray-500');
+            });
+            const activeButton = document.getElementById(`nav-${sectionId.split('-')[0]}`);
+            if (activeButton) {
+                activeButton.classList.remove('text-gray-500');
+                activeButton.classList.add('text-purple-700', 'bg-purple-50');
+            }
+        }
+
+        // Initialize page
+        window.onload = () => {
+            fetchUserProfile();
+            showSection('dashboard-section'); // Show dashboard by default
+        };
     </script>
 </body>
 </html>

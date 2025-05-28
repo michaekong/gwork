@@ -90,7 +90,26 @@ class UserProfileResponse(Schema):
     # Vous pouvez ajouter ici des champs pour Travailleur/Employeur si l'utilisateur en a un
     # Ex: travailleur_id: uuid.UUID | None = None
     # Ex: employeur_nom_entreprise: str | None = None
-
+class Userprofile(Schema):
+    id_utilisateur: uuid.UUID
+    nom: str
+    prenom: str
+    coordonnees_contact: Optional[str]
+    disponibilite: str
+    zone_preference: List[List[float]]
+    type_contrat_souhaite: List[str]
+    description_profil: Optional[str]
+    cv: Optional[str]
+    photo_profil: Optional[str]
+    email: str
+    est_email_verifie: bool
+    est_administrateur: bool
+    longitude: float| None = None
+    latitude: float| None = None
+class TokenResponseUrl(Schema):
+    access_token: str
+    token_type: str
+    redirect_url: Optional[str]
 class UserListResponse(Schema):
     """
     Schéma pour la réponse d'une liste d'utilisateurs.
