@@ -3,8 +3,8 @@
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-    const API_BASE_URL = 'http://127.0.0.1:8000/auth'; // <-- URL mise à jour
-     //const API_BASE_URL = 'https://gwork.onrender.com/auth/'
+    //const API_BASE_URL = 'http://127.0.0.1:8000/auth'; // <-- URL mise à jour
+     const API_BASE_URL = 'https://gwork.onrender.com/auth/'
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
 
@@ -270,10 +270,10 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         if (response.ok) {
             setAuthToken(data.access_token);
             showMessage('Connexion réussie !', 'success');
-            loginForm.reset();
-            showSection('dashboard-section');
-            fetchUserProfile();
+            
+            
           window.location.href = `${API_BASE_URL}/mainpage`;
+          fetchUserProfile();
             showMessage(`Erreur: ${data.detail || 'Erreur inconnue'}`, 'error');
         }
 
@@ -319,6 +319,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
 
     async function fetchUserProfile() {
         const token = getAuthToken();
+        alert(token)
         if (!token) {
             showMessage('Veuillez vous connecter pour voir votre profil.', 'info');
             showSection('login-form');

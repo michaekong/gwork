@@ -16,63 +16,75 @@
     
     <style>
         .map-container {
-            height: 250px;
+            height: 300px;
             width: 100%;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.2);
+            transition: transform 0.3s ease;
         }
         
         .chat-container {
-            height: 250px;
+            min-height: 300px;
             width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.15);
+            transition: transform 0.3s ease;
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6b46c1 0%, #a3bffa 100%);
         }
         
         .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .job-card {
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             border: 1px solid #e5e7eb;
+            border-radius: 12px;
             width: 100%;
+            overflow: hidden;
         }
         
         .job-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
-            border-color: #8b5cf6;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.25);
+            border-color: #6b46c1;
         }
         
         .notification-badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
+            top: -6px;
+            right: -6px;
+            background: #dc2626;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
         .sidebar {
-            width: 16rem;
+            width: 18rem;
             min-height: 100vh;
-            background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
-            transition: transform 0.3s ease-in-out;
+            background: linear-gradient(180deg, #6b46c1 0%, #553c9a 100%);
+            transition: transform 0.4s ease-in-out;
             z-index: 50;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         @media (max-width: 1023px) {
@@ -81,7 +93,7 @@
                 top: 0;
                 left: 0;
                 transform: translateX(-100%);
-                width: 75%;
+                width: 80%;
             }
             .sidebar.open {
                 transform: translateX(0);
@@ -96,63 +108,71 @@
         }
         
         .message-bubble {
-            max-width: 70%;
+            max-width: 75%;
             word-wrap: break-word;
+            border-radius: 12px;
+            padding: 10px 15px;
         }
         
         .message-sent {
-            background: #8b5cf6;
+            background: linear-gradient(90deg, #6b46c1, #8b5cf6);
             color: white;
             margin-left: auto;
+            box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
         }
         
         .message-received {
-            background: #f3f4f6;
-            color: #374151;
+            background: #374151;
+            color: #f7fafc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .online-indicator {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background: #10b981;
             border-radius: 50%;
             position: absolute;
-            bottom: 0;
-            right: 0;
+            bottom: 2px;
+            right: 2px;
             border: 2px solid white;
+            box-shadow: 0 0 5px #10b981;
         }
         
         .filter-chip {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
         }
         
         .filter-chip:hover {
-            background: #8b5cf6;
+            background: #6b46c1;
             color: white;
+            border-color: #6b46c1;
         }
         
         .filter-chip.active {
-            background: #8b5cf6;
+            background: #6b46c1;
             color: white;
+            border-color: #6b46c1;
         }
         
         .custom-scrollbar {
             scrollbar-width: thin;
-            scrollbar-color: #8b5cf6 #f1f5f9;
+            scrollbar-color: #6b46c1 #f1f5f9;
         }
         
         .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #f1f5f9;
-            border-radius: 3px;
+            border-radius: 5px;
         }
         
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #8b5cf6;
-            border-radius: 3px;
+            background: #6b46c1;
+            border-radius: 5px;
         }
 
         /* Navigation responsive */
@@ -160,68 +180,73 @@
             max-width: 100%;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
         }
 
         .nav-logo {
-            padding: 0.5rem 0;
+            padding: 0.75rem 0;
         }
 
         .nav-items {
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: 1rem;
-            padding: 0.5rem 0;
+            gap: 1.5rem;
+            padding: 0.75rem 0;
         }
 
         .nav-btn {
             white-space: nowrap;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             background: none;
             border: none;
             color: #4b5563;
-            font-size: 0.875rem;
-            transition: background-color 0.2s;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
         }
 
         .nav-btn:hover {
             background-color: #f3f4f6;
-            color: #8b5cf6;
+            color: #6b46c1;
+            transform: translateY(-2px);
         }
 
         .nav-btn.active {
-            color: #8b5cf6;
+            color: #6b46c1;
             background-color: #f3f4f6;
+            font-weight: 600;
         }
 
         .nav-btn i {
-            margin-right: 0.5rem;
+            margin-right: 0.75rem;
         }
 
         @media (min-width: 1024px) {
             .nav-container {
                 overflow-x: hidden;
-                padding: 1rem;
+                padding: 1.5rem;
             }
             .nav-items {
-                gap: 1.5rem;
+                gap: 2rem;
             }
             .nav-btn {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
         }
 
         /* Main content */
         .main-content {
             width: 100%;
-            padding: 1rem;
+            padding: 1.5rem;
             overflow-x: hidden;
+            transition: padding 0.3s ease;
         }
 
         .grid-container {
             display: grid;
-            gap: 1rem;
+            gap: 1.5rem;
             grid-template-columns: 1fr;
         }
 
@@ -240,7 +265,7 @@
         /* Job listings */
         #jobs-container {
             display: grid;
-            gap: 1rem;
+            gap: 1.5rem;
             grid-template-columns: 1fr;
         }
 
@@ -249,32 +274,207 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* Dark mode styles */
+        .dark-mode {
+            background-color: #1a202c;
+            color: #f7fafc;
+        }
+
+        .dark-mode .bg-white {
+            background-color: #2d3748;
+        }
+
+        /* Styles pour les titres et sous-titres en violet (#6b46c1) */
+        #dashboard-section h2,
+        #jobs-section h2,
+        #map-section h2,
+        #messages-section h2 {
+            color: #6b46c1 !important;
+        }
+
+        #dashboard-section h3,
+        #jobs-section h3,
+        #map-section h3,
+        #messages-section h3 {
+            color: #6b46c1 !important;
+        }
+
+        #dashboard-section p,
+        #jobs-section p,
+        #map-section p,
+        #messages-section p {
+            color: #6b46c1 !important;
+        }
+
+        .dark-mode #dashboard-section h2,
+        .dark-mode #jobs-section h2,
+        .dark-mode #map-section h2,
+        .dark-mode #messages-section h2 {
+            color: #6b46c1 !important;
+        }
+
+        .dark-mode #dashboard-section h3,
+        .dark-mode #jobs-section h3,
+        .dark-mode #map-section h3,
+        .dark-mode #messages-section h3 {
+            color: #6b46c1 !important;
+        }
+
+        .dark-mode #dashboard-section p,
+        .dark-mode #jobs-section p,
+        .dark-mode #map-section p,
+        .dark-mode #messages-section p {
+            color: #6b46c1 !important;
+        }
+
+        /* Styles pour le contenu des filtres et champs de recherche en violet (#6b46c1) */
+        #jobs-section .filter-chip {
+            color: #6b46c1 !important;
+        }
+
+        #jobs-section input,
+        #jobs-section select {
+            color: #6b46c1 !important;
+            border-color: #6b46c1 !important;
+        }
+
+        #jobs-section input::placeholder,
+        #jobs-section select option {
+            color: #6b46c1 !important;
+        }
+
+        .dark-mode #jobs-section .filter-chip {
+            color: #6b46c1 !important;
+        }
+
+        .dark-mode #jobs-section input,
+        .dark-mode #jobs-section select {
+            color: #6b46c1 !important;
+            border-color: #6b46c1 !important;
+            background-color: #2d3748 !important;
+        }
+
+        .dark-mode #jobs-section input::placeholder,
+        .dark-mode #jobs-section select option {
+            color: #6b46c1 !important;
+        }
+
+        .dark-mode .text-gray-700 {
+            color: #e5e7eb;
+        }
+
+        .dark-mode .text-gray-500 {
+            color: #d1d5db;
+        }
+
+        .dark-mode .border-gray-200 {
+            border-color: #4a5568;
+        }
+
+        .dark-mode .shadow-sm {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode .job-card {
+            border-color: #4a5568;
+        }
+
+        .dark-mode .job-card:hover {
+            box-shadow: 0 15px 35px rgba(107, 70, 193, 0.4);
+            border-color: #6b46c1;
+        }
+
+        .dark-mode .message-received {
+            background: #374151;
+            color: #f7fafc;
+        }
+
+        .dark-mode .filter-chip {
+            background: #4a5568;
+            border-color: #4a5568;
+        }
+
+        .dark-mode .filter-chip:hover {
+            background: #6b46c1;
+            color: white;
+            border-color: #6b46c1;
+        }
+
+        .dark-mode .nav-btn {
+            color: #d1d5db;
+        }
+
+        .dark-mode .nav-btn:hover {
+            background-color: #2d3748;
+            color: #6b46c1;
+        }
+
+        .dark-mode .nav-btn.active {
+            color: #6b46c1;
+            background-color: #2d3748;
+        }
+
+        .dark-mode .sidebar {
+            background: linear-gradient(180deg, #4c1d95 0%, #6b21a8 100%);
+        }
+
+        .dark-mode footer {
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+
+        .dark-mode .bg-gray-50 {
+            background-color: #1a202c;
+        }
+
+        /* Responsive fixes for messages */
+        @media (max-width: 640px) {
+            .chat-container {
+                min-height: 200px;
+            }
+            .message-bubble {
+                max-width: 85%;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .chat-container {
+                min-height: 150px;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 font-sans">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b border-purple-100">
+    <nav class="bg-white shadow-lg border-b border-purple-200">
         <div class="max-w-7xl mx-auto nav-container">
             <div class="nav-logo flex items-center justify-between">
                 <div class="flex items-center">
-                    <!-- Hamburger Menu for Sidebar on Mobile -->
-                    <button id="sidebar-toggle" class="lg:hidden p-2 text-gray-600 hover:text-purple-600 focus:outline-none">
+                    <button id="sidebar-toggle" class="lg:hidden p-2 text-gray-600 hover:text-purple-600 focus:outline-none transition-transform transform hover:scale-110">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <div class="flex-shrink-0 ml-2">
-                        <h1 class="text-2xl font-bold text-purple-600 logo-text">
+                    <div class="flex-shrink-0 ml-3">
+                        <h1 class="text-3xl font-bold text-purple-700 logo-text">
                             <i class="fas fa-briefcase mr-2"></i>GWORK
                         </h1>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button id="notifications-btn" class="relative p-2 text-gray-400 hover:text-purple-600">
+                <div class="flex items-center space-x-6">
+                    <button id="notifications-btn" class="relative p-2 text-gray-500 hover:text-purple-700 transition-transform transform hover:scale-110">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="notification-badge" id="notification-count">5</span>
                     </button>
+                    <button id="theme-toggle" class="p-2 text-gray-500 hover:text-purple-700 transition-transform transform hover:scale-110">
+                        <i id="theme-icon" class="fas fa-sun text-xl"></i>
+                    </button>
                     <div class="relative">
-                        <button id="profile-btn" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Profile">
+                        <button id="profile-btn" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 transition-transform transform hover:scale-110">
+                            <img class="h-10 w-10 rounded-full border-2 border-purple-200" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Profile">
+                            <span class="ml-2 text-sm font-medium text-gray-700">cggf</span>
                         </button>
                     </div>
                 </div>
@@ -301,44 +501,43 @@
         <!-- Sidebar -->
         <div id="sidebar" class="sidebar text-white hidden lg:block">
             <div class="p-6">
-                <!-- Close Button for Mobile -->
-                <button id="sidebar-close" class="lg:hidden flex justify-end w-full text-white mb-4">
+                <button id="sidebar-close" class="lg:hidden flex justify-end w-full text-white mb-4 transition-transform transform hover:scale-110">
                     <i class="fas fa-times text-xl"></i>
                 </button>
-                <div class="flex items-center mb-6">
-                    <img class="h-12 w-12 rounded-full border-2 border-white" id="profile-photo" alt="Profile">
-                    <div class="ml-3">
-                        <p class="text-sm font-semibold" id="profile-nom">cggf</p>
-                        <p class="text-xs opacity-75" id="profile-prenom"></p>
-                        <p class="text-xs" id="profile-email"></p>
-                        <p class="text-xs" id="profile-contact"></p>
-                        <p class="text-xs" id="profile-disponibilite"></p>
-                        <p class="text-xs" id="profile-description"></p>
-                        <p class="text-xs" id="profile-contrats"></p>
-                        <ul class="text-xs" id="profile-zone"></ul>
-                        <p class="text-xs" id="profile-cv"></p>
+                <div class="flex items-center mb-8">
+                    <img class="h-14 w-14 rounded-full border-2 border-white shadow-lg" id="profile-photo" alt="Profile">
+                    <div class="ml-4">
+                        <p class="text-lg font-semibold" id="profile-nom">cggf</p>
+                        <p class="text-sm opacity-75" id="profile-prenom"></p>
+                        <p class="text-sm" id="profile-email"></p>
+                        <p class="text-sm" id="profile-contact"></p>
+                        <p class="text-sm" id="profile-disponibilite"></p>
+                        <p class="text-sm" id="profile-description"></p>
+                        <p class="text-sm" id="profile-contrats"></p>
+                        <ul class="text-sm" id="profile-zone"></ul>
+                        <p class="text-sm" id="profile-cv"></p>
                     </div>
                 </div>
                 
-                <nav class="space-y-2">
-                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg bg-white bg-opacity-20">
-                        <i class="fas fa-tachometer-alt mr-3"></i>
+                <nav class="space-y-3">
+                    <a href="#" class="sidebar-link flex items-center px-5 py-3 rounded-xl bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-300">
+                        <i class="fas fa-tachometer-alt mr-4 text-lg"></i>
                         Tableau de bord
                     </a>
-                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
-                        <i class="fas fa-user mr-3"></i>
+                    <a href="#" class="sidebar-link flex items-center px-5 py-3 rounded-xl hover:bg-white hover:bg-opacity-10 transition-all duration-300">
+                        <i class="fas fa-user mr-4 text-lg"></i>
                         Mon Profil
                     </a>
-                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
-                        <i class="fas fa-file-alt mr-3"></i>
+                    <a href="#" class="sidebar-link flex items-center px-5 py-3 rounded-xl hover:bg-white hover:bg-opacity-10 transition-all duration-300">
+                        <i class="fas fa-file-alt mr-4 text-lg"></i>
                         Mes Candidatures
                     </a>
-                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
-                        <i class="fas fa-star mr-3"></i>
+                    <a href="#" class="sidebar-link flex items-center px-5 py-3 rounded-xl hover:bg-white hover:bg-opacity-10 transition-all duration-300">
+                        <i class="fas fa-star mr-4 text-lg"></i>
                         Favoris
                     </a>
-                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
-                        <i class="fas fa-cog mr-3"></i>
+                    <a href="#" class="sidebar-link flex items-center px-5 py-3 rounded-xl hover:bg-white hover:bg-opacity-10 transition-all duration-300">
+                        <i class="fas fa-cog mr-4 text-lg"></i>
                         Paramètres
                     </a>
                 </nav>
@@ -349,117 +548,117 @@
         <div class="flex-1 overflow-hidden main-content">
             <!-- Dashboard Section -->
             <div id="dashboard-section" class="p-4">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Tableau de bord</h2>
-                    <p class="text-gray-600 text-sm">Bienvenue sur GWORK, votre plateforme d'emploi</p>
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold">Tableau de bord</h2>
+                    <p class="text-base">Bienvenue sur GWORK, votre plateforme d'emploi</p>
                 </div>
 
                 <!-- Stats Cards -->
                 <div class="grid-container">
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-purple-100">
-                                <i class="fas fa-briefcase text-purple-600 text-lg"></i>
+                            <div class="p-4 rounded-full bg-purple-100">
+                                <i class="fas fa-briefcase text-purple-600 text-2xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xl font-semibold text-gray-900">24</p>
-                                <p class="text-gray-600 text-xs">Emplois disponibles</p>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold">24</p>
+                                <p class="text-sm">Emplois disponibles</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-green-100">
-                                <i class="fas fa-check-circle text-green-600 text-lg"></i>
+                            <div class="p-4 rounded-full bg-green-100">
+                                <i class="fas fa-check-circle text-green-600 text-2xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xl font-semibold text-gray-900">8</p>
-                                <p class="text-gray-600 text-xs">Candidatures envoyées</p>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold">8</p>
+                                <p class="text-sm">Candidatures envoyées</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-blue-100">
-                                <i class="fas fa-eye text-blue-600 text-lg"></i>
+                            <div class="p-4 rounded-full bg-blue-100">
+                                <i class="fas fa-eye text-blue-600 text-2xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xl font-semibold text-gray-900">156</p>
-                                <p class="text-gray-600 text-xs">Vues de profil</p>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold">156</p>
+                                <p class="text-sm">Vues de profil</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-orange-100">
-                                <i class="fas fa-comments text-orange-600 text-lg"></i>
+                            <div class="p-4 rounded-full bg-orange-100">
+                                <i class="fas fa-comments text-orange-600 text-2xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xl font-semibold text-gray-900">12</p>
-                                <p class="text-gray-600 text-xs">Messages non lus</p>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold">12</p>
+                                <p class="text-sm">Messages non lus</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="text-base font-semibold text-gray-900 mb-3">Actions rapides</h3>
-                        <div class="space-y-2">
-                            <button class="w-full flex items-center justify-between p-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition text-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <h3 class="text-xl font-semibold mb-4">Actions rapides</h3>
+                        <div class="space-y-3">
+                            <button class="w-full flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 rounded-xl transition-all duration-300 text-base">
                                 <span class="flex items-center">
-                                    <i class="fas fa-plus mr-2 text-purple-600"></i>
+                                    <i class="fas fa-plus mr-3 text-purple-600 text-xl"></i>
                                     Créer une offre d'emploi
                                 </span>
-                                <i class="fas fa-arrow-right text-purple-600"></i>
+                                <i class="fas fa-arrow-right text-purple-600 text-xl"></i>
                             </button>
-                            <button class="w-full flex items-center justify-between p-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition text-sm">
+                            <button class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-300 text-base">
                                 <span class="flex items-center">
-                                    <i class="fas fa-search mr-2 text-gray-600"></i>
+                                    <i class="fas fa-search mr-3 text-gray-600 text-xl"></i>
                                     Rechercher des candidats
                                 </span>
-                                <i class="fas fa-arrow-right text-gray-600"></i>
+                                <i class="fas fa-arrow-right text-gray-600 text-xl"></i>
                             </button>
-                            <button class="w-full flex items-center justify-between p-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition text-sm">
+                            <button class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all duration-300 text-base">
                                 <span class="flex items-center">
-                                    <i class="fas fa-edit mr-2 text-gray-600"></i>
+                                    <i class="fas fa-edit mr-3 text-gray-600 text-xl"></i>
                                     Mettre à jour mon profil
                                 </span>
-                                <i class="fas fa-arrow-right text-gray-600"></i>
+                                <i class="fas fa-arrow-right text-gray-600 text-xl"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="text-base font-semibold text-gray-900 mb-3">Activité récente</h3>
-                        <div class="space-y-2">
-                            <div class="flex items-center p-2 bg-gray-50 rounded-lg">
-                                <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <h3 class="text-xl font-semibold mb-4">Activité récente</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300">
+                                <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
                                 <div class="flex-1">
-                                    <p class="text-xs text-gray-900">Candidature acceptée</p>
-                                    <p class="text-xs text-gray-500">Développeur Web - TechCorp</p>
+                                    <p class="text-sm font-medium">Candidature acceptée</p>
+                                    <p class="text-xs">Développeur Web - TechCorp</p>
                                 </div>
-                                <span class="text-xs text-gray-400">2h</span>
+                                <span class="text-xs">2h</span>
                             </div>
-                            <div class="flex items-center p-2 bg-gray-50 rounded-lg">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300">
+                                <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
                                 <div class="flex-1">
-                                    <p class="text-xs text-gray-900">Nouveau message</p>
-                                    <p class="text-xs text-gray-500">De Marie Martin</p>
+                                    <p class="text-sm font-medium">Nouveau message</p>
+                                    <p class="text-xs">De Marie Martin</p>
                                 </div>
-                                <span class="text-xs text-gray-400">5h</span>
+                                <span class="text-xs">5h</span>
                             </div>
-                            <div class="flex items-center p-2 bg-gray-50 rounded-lg">
-                                <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
                                 <div class="flex-1">
-                                    <p class="text-xs text-gray-900">Profil visité</p>
-                                    <p class="text-xs text-gray-500">Par WebDesign Studio</p>
+                                    <p class="text-sm font-medium">Profil visité</p>
+                                    <p class="text-xs">Par WebDesign Studio</p>
                                 </div>
-                                <span class="text-xs text-gray-400">1j</span>
+                                <span class="text-xs">1j</span>
                             </div>
                         </div>
                     </div>
@@ -468,195 +667,191 @@
 
             <!-- Jobs Section -->
             <div id="jobs-section" class="p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Offres d'emploi</h2>
-                    <p class="text-gray-600 text-sm">Découvrez les opportunités qui vous correspondent</p>
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold">Offres d'emploi</h2>
+                    <p class="text-base">Découvrez les opportunités qui vous correspondent</p>
                 </div>
 
                 <!-- Filters -->
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4">
-                    <div class="flex flex-col gap-3">
-                        <input type="text" id="search-input" placeholder="Rechercher un emploi..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
-                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6 hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex flex-col gap-4">
+                        <input type="text" id="search-input" placeholder="Rechercher un emploi..." class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base">
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 text-base">
                             <option>Tous les domaines</option>
                             <option>Informatique</option>
                             <option>Marketing</option>
                             <option>Design</option>
                             <option>Vente</option>
                         </select>
-                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 text-base">
                             <option>Toutes les villes</option>
                             <option>Yaoundé</option>
                             <option>Douala</option>
                             <option>Bafoussam</option>
                         </select>
-                        <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                        <button class="px-6 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300 text-base flex items-center justify-center">
                             <i class="fas fa-search mr-2"></i>Rechercher
                         </button>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2 mt-3 overflow-x-auto">
-                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">CDI</span>
-                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">CDD</span>
-                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">Freelance</span>
-                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">Temps partiel</span>
-                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">Remote</span>
+                    <div class="flex flex-wrap gap-3 mt-4 overflow-x-auto">
+                        <span class="filter-chip px-3 py-1 bg-gray-100 rounded-full text-sm cursor-pointer">CDI</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 rounded-full text-sm cursor-pointer">CDD</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 rounded-full text-sm cursor-pointer">Freelance</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 rounded-full text-sm cursor-pointer">Temps partiel</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 rounded-full text-sm cursor-pointer">Remote</span>
                     </div>
                 </div>
 
                 <!-- Job Listings -->
                 <div id="jobs-container">
-                    <!-- Job Card 1 -->
-                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-3">
+                    <div class="job-card bg-white p-6 rounded-2xl shadow-md">
+                        <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center">
-                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-2">
-                                    <h3 class="font-semibold text-gray-900 text-sm">Développeur Frontend</h3>
-                                    <p class="text-gray-600 text-xs">TechCorp SARL</p>
+                                <img class="w-12 h-12 rounded-lg shadow-md" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-lg">Développeur Frontend</h3>
+                                    <p class="text-sm">TechCorp SARL</p>
                                 </div>
                             </div>
-                            <button class="text-gray-400 hover:text-purple-600">
-                                <i class="fas fa-heart"></i>
+                            <button class="text-gray-400 hover:text-purple-600 transition-transform transform hover:scale-125">
+                                <i class="fas fa-heart text-lg"></i>
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-xs text-gray-600 mb-2">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
+                        <div class="flex items-center text-sm mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
                             <span>Yaoundé, Cameroun</span>
-                            <span class="mx-1">•</span>
-                            <i class="fas fa-clock mr-1"></i>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
                             <span>CDI</span>
                         </div>
                         
-                        <p class="text-gray-700 text-xs mb-3">Nous recherchons un développeur frontend passionné pour rejoindre notre équipe dynamique...</p>
+                        <p class="text-sm mb-4">Nous recherchons un développeur frontend passionné pour rejoindre notre équipe dynamique...</p>
                         
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">React</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">JavaScript</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">CSS</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">React</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">JavaScript</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">CSS</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-base font-semibold text-purple-600">250,000 - 400,000 FCFA</span>
-                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-xl font-semibold text-purple-600">250,000 - 400,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300 text-base">
                                 Postuler
                             </button>
                         </div>
                     </div>
 
-                    <!-- Job Card 2 -->
-                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-3">
+                    <div class="job-card bg-white p-6 rounded-2xl shadow-md">
+                        <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center">
-                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-2">
-                                    <h3 class="font-semibold text-gray-900 text-sm">Designer UX/UI</h3>
-                                    <p class="text-gray-600 text-xs">Creative Studio</p>
+                                <img class="w-12 h-12 rounded-lg shadow-md" src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-lg">Designer UX/UI</h3>
+                                    <p class="text-sm">Creative Studio</p>
                                 </div>
                             </div>
-                            <button class="text-purple-600">
-                                <i class="fas fa-heart"></i>
+                            <button class="text-purple-600 transition-transform transform hover:scale-125">
+                                <i class="fas fa-heart text-lg"></i>
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-xs text-gray-600 mb-2">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
+                        <div class="flex items-center text-sm mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
                             <span>Douala, Cameroun</span>
-                            <span class="mx-1">•</span>
-                            <i class="fas fa-clock mr-1"></i>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
                             <span>CDD</span>
                         </div>
                         
-                        <p class="text-gray-700 text-xs mb-3">Rejoignez notre équipe créative pour concevoir des expériences utilisateur exceptionnelles...</p>
+                        <p class="text-sm mb-4">Rejoignez notre équipe créative pour concevoir des expériences utilisateur exceptionnelles...</p>
                         
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Figma</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Adobe XD</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Prototyping</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Figma</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Adobe XD</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Prototyping</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-base font-semibold text-purple-600">200,000 - 350,000 FCFA</span>
-                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-xl font-semibold text-purple-600">200,000 - 350,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300 text-base">
                                 Postuler
                             </button>
                         </div>
                     </div>
 
-                    <!-- Job Card 3 -->
-                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-3">
+                    <div class="job-card bg-white p-6 rounded-2xl shadow-md">
+                        <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center">
-                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-2">
-                                    <h3 class="font-semibold text-gray-900 text-sm">Marketing Manager</h3>
-                                    <p class="text-gray-600 text-xs">MarketPro</p>
+                                <img class="w-12 h-12 rounded-lg shadow-md" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-lg">Marketing Manager</h3>
+                                    <p class="text-sm">MarketPro</p>
                                 </div>
                             </div>
-                            <button class="text-gray-400 hover:text-purple-600">
-                                <i class="fas fa-heart"></i>
+                            <button class="text-gray-400 hover:text-purple-600 transition-transform transform hover:scale-125">
+                                <i class="fas fa-heart text-lg"></i>
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-xs text-gray-600 mb-2">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
+                        <div class="flex items-center text-sm mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
                             <span>Bafoussam, Cameroun</span>
-                            <span class="mx-1">•</span>
-                            <i class="fas fa-clock mr-1"></i>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
                             <span>CDI</span>
                         </div>
                         
-                        <p class="text-gray-700 text-xs mb-3">Développez notre stratégie marketing et gérez nos campagnes digitales...</p>
+                        <p class="text-sm mb-4">Développez notre stratégie marketing et gérez nos campagnes digitales...</p>
                         
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">SEO</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Social Media</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Analytics</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">SEO</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Social Media</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Analytics</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-base font-semibold text-purple-600">300,000 - 500,000 FCFA</span>
-                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-xl font-semibold text-purple-600">300,000 - 500,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300 text-base">
                                 Postuler
                             </button>
                         </div>
                     </div>
 
-                    <!-- Job Card 4 -->
-                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-3">
+                    <div class="job-card bg-white p-6 rounded-2xl shadow-md">
+                        <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center">
-                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-2">
-                                    <h3 class="font-semibold text-gray-900 text-sm">Data Analyst</h3>
-                                    <p class="text-gray-600 text-xs">DataCorp</p>
+                                <img class="w-12 h-12 rounded-lg shadow-md" src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-lg">Data Analyst</h3>
+                                    <p class="text-sm">DataCorp</p>
                                 </div>
                             </div>
-                            <button class="text-gray-400 hover:text-purple-600">
-                                <i class="fas fa-heart"></i>
+                            <button class="text-gray-400 hover:text-purple-600 transition-transform transform hover:scale-125">
+                                <i class="fas fa-heart text-lg"></i>
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-xs text-gray-600 mb-2">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
+                        <div class="flex items-center text-sm mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
                             <span>Remote, Cameroun</span>
-                            <span class="mx-1">•</span>
-                            <i class="fas fa-clock mr-1"></i>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
                             <span>Freelance</span>
                         </div>
                         
-                        <p class="text-gray-700 text-xs mb-3">Analysez nos données pour générer des insights business exploitables...</p>
+                        <p class="text-sm mb-4">Analysez nos données pour générer des insights business exploitables...</p>
                         
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Python</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">SQL</span>
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Tableau</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Python</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">SQL</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Tableau</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-base font-semibold text-purple-600">150,000 - 250,000 FCFA</span>
-                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-xl font-semibold text-purple-600">150,000 - 250,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300 text-base">
                                 Postuler
                             </button>
                         </div>
@@ -664,8 +859,8 @@
                 </div>
 
                 <!-- Load More -->
-                <div class="text-center mt-6">
-                    <button class="px-4 py-2 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition text-sm">
+                <div class="text-center mt-8">
+                    <button class="px-6 py-2 border-2 border-purple-600 text-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-300 text-base font-medium">
                         Charger plus d'offres d'emploi
                     </button>
                 </div>
@@ -673,39 +868,39 @@
 
             <!-- Map Section -->
             <div id="map-section" class="p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Carte des les plus  Emplois</h2>
-                    <p class="text-gray-600 text-sm">Trouvez des opportunités près de chez vous</p>
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold">Carte des Emplois</h2>
+                    <p class="text-base">Trouvez des opportunités près de chez vous</p>
                 </div>
                 <div id="map" class="map-container"></div>
             </div>
 
             <!-- Messages Section -->
             <div id="messages-section" class="p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Messages</h2>
-                    <p class="text-gray-600 text-sm">Gérez vos conversations avec les employeurs</p>
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold">Messages</h2>
+                    <p class="text-base">Gérez vos conversations avec les employeurs</p>
                 </div>
-                <div class="chat-container bg-white p-3 rounded-xl shadow-sm border border-gray-200">
-                    <div class="h-60 overflow-y-auto custom-scrollbar p-3">
-                        <div class="message-bubble message-received p-2 rounded-lg mb-2">
-                            <p class="text-xs">Bonjour, nous avons reçu votre candidature pour le poste de Développeur Frontend.</p>
-                            <span class="text-xs text-gray-400">Marie Martin - 10:30</span>
+                <div class="chat-container bg-white p-4 rounded-2xl shadow-md border border-gray-200">
+                    <div class="h-[calc(100%-60px)] min-h-[200px] max-h-[400px] overflow-y-auto custom-scrollbar p-4">
+                        <div class="message-bubble message-received p-3 rounded-xl mb-3">
+                            <p class="text-sm">Bonjour, nous avons reçu votre candidature pour le poste de Développeur Frontend.</p>
+                            <span class="text-xs">Marie Martin - 10:30</span>
                         </div>
-                        <div class="message-bubble message-sent p-2 rounded-lg mb-2">
-                            <p class="text-xs">Merci pour votre retour ! Quand puis-je passer un entretien ?</p>
-                            <span class="text-xs text-gray-400">Vous - 10:35</span>
+                        <div class="message-bubble message-sent p-3 rounded-xl mb-3">
+                            <p class="text-sm">Merci pour votre retour ! Quand puis-je passer un entretien ?</p>
+                            <span class="text-xs">Vous - 10:35</span>
                         </div>
-                        <div class="message-bubble message-received p-2 rounded-lg mb-2">
-                            <p class="text-xs">Nous pouvons organiser un entretien demain à 14h. Cela vous convient-il ?</p>
-                            <span class="text-xs text-gray-400">Marie Martin - 10:40</span>
+                        <div class="message-bubble message-received p-3 rounded-xl mb-3">
+                            <p class="text-sm">Nous pouvons organiser un entretien demain à 14h. Cela vous convient-il ?</p>
+                            <span class="text-xs">Marie Martin - 10:40</span>
                         </div>
                     </div>
-                    <div class="mt-3">
+                    <div class="mt-4">
                         <div class="flex items-center">
-                            <input type="text" id="message-input" placeholder="Écrivez un message..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
-                            <button class="ml-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                                <i class="fas fa-paper-plane"></i>
+                            <input type="text" id="message-input" placeholder="Écrivez un message..." class="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base">
+                            <button class="ml-3 px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300">
+                                <i class="fas fa-paper-plane text-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -715,22 +910,22 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-purple-200 py-4">
+    <footer class="bg-white border-t border-purple-200 py-6 mt-8">
         <div class="max-w-7xl mx-auto text-center text-gray-600 px-4">
-            <p class="text-xs">© 2023 GWORK. Tous droits réservés.</p>
-            <div class="flex justify-center space-x-4 mt-2 flex-wrap">
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">Politique de confidentialité</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">Conditions d'utilisation</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">À propos</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">Contact</a>
+            <p class="text-sm">© 2023 GWORK. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-6 mt-3 flex-wrap">
+                <a href="#" class="text-gray-600 hover:text-purple-700 transition-all duration-300 text-sm font-medium">Politique de confidentialité</a>
+                <a href="#" class="text-gray-600 hover:text-purple-700 transition-all duration-300 text-sm font-medium">Conditions d'utilisation</a>
+                <a href="#" class="text-gray-600 hover:text-purple-700 transition-all duration-300 text-sm font-medium">À propos</a>
+                <a href="#" class="text-gray-600 hover:text-purple-700 transition-all duration-300 text-sm font-medium">Contact</a>
             </div>
-            <div class="mt-2">
-                <span class="text-gray-500 text-xs">Suivez-nous :</span>
-                <div class="flex justify-center space-x-3 mt-1">
-                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-instagram"></i></a>
+            <div class="mt-4">
+                <span class="text-gray-500 text-sm">Suivez-nous :</span>
+                <div class="flex justify-center space-x-4 mt-2">
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition-all duration-300"><i class="fab fa-facebook-f text-lg"></i></a>
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition-all duration-300"><i class="fab fa-twitter text-lg"></i></a>
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition-all duration-300"><i class="fab fa-linkedin-in text-lg"></i></a>
+                    <a href="#" class="text-purple-600 hover:text-purple-800 transition-all duration-300"><i class="fab fa-instagram text-lg"></i></a>
                 </div>
             </div>
         </div>
@@ -739,9 +934,10 @@
     <!-- Leaflet JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
-        //Base URL de votre API Django Ninja
-     //const API_BASE_URL = 'http://127.0.0.1:8000/auth';
-    const API_BASE_URL = 'https://gwork.onrender.com/auth';
+        // Base URL de votre API Django Ninja
+       // const API_BASE_URL = 'http://127.0.0.1:8000/auth';
+        const API_BASE_URL = 'https://gwork.onrender.com/auth';
+
         // Map and layers
         let map;
         let userMarker;
@@ -778,8 +974,8 @@
                 if (data.zone_preference.length > 2) {
                     const latLngs = data.zone_preference.map(coord => [coord[0], coord[1]]);
                     preferredZonePolygon = L.polygon(latLngs, {
-                        color: '#8b5cf6',
-                        fillColor: '#8b5cf6',
+                        color: '#6b46c1',
+                        fillColor: '#6b46c1',
                         fillOpacity: 0.2
                     }).addTo(map).bindPopup('Votre zone de préférence');
                     map.fitBounds(preferredZonePolygon.getBounds());
@@ -795,6 +991,7 @@
 
         async function fetchUserProfile() {
             const token = getAuthToken();
+
             if (!token) {
                 showMessage('Veuillez vous connecter pour voir votre profil.', 'info');
                 showSection('login-form');
@@ -807,7 +1004,6 @@
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
                 const data = await response.json();
-                alert(data)
                 if (response.ok) {
                     document.getElementById('profile-nom').textContent = data.nom || 'N/A';
                     document.getElementById('profile-prenom').textContent = data.prenom || 'N/A';
@@ -817,7 +1013,7 @@
                     document.getElementById('profile-description').textContent = data.description_profil || 'Aucune description';
                     
                     const cvElement = document.getElementById('profile-cv');
-                    if (data.cv) cvElement.innerHTML = `<a href="${data.cv}" target="_blank">Voir le CV</a>`;
+                    if (data.cv) cvElement.innerHTML = `<a href="${data.cv}" target="_blank" class="text-purple-600 hover:underline">Voir le CV</a>`;
                     else cvElement.textContent = 'CV non disponible';
                     
                     const photoElement = document.getElementById('profile-photo');
@@ -957,6 +1153,31 @@
                 activeButton.classList.add('active');
             }
         }
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        let isDarkMode = false;
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            themeIcon.className = `fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-xl`;
+            if (isDarkMode) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme or default to light
+        if (localStorage.getItem('theme') === 'dark') {
+            isDarkMode = true;
+            document.body.classList.add('dark-mode');
+            themeIcon.className = 'fas fa-sun text-xl';
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
 
         window.onload = () => {
             fetchUserProfile();
