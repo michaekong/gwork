@@ -22,3 +22,4 @@ sqlparse==0.5.3
 sshtunnel==0.4.0
 typing-inspection==0.4.1
 typing_extensions==4.13.2
+django-cors-headers==4.3.1
