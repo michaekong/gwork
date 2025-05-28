@@ -162,7 +162,7 @@ JWT_EXPIRATION_TIME_HOURS = 24 # Token valide 24 heures
 # Configuration de la vérification d'email
 EMAIL_VERIFICATION_SALT = "VOTRE_SEL_UNIQUE_ET_SECRET_POUR_LA_VERIFICATION_EMAIL" # À changer en production !
 #FRONTEND_URL = 'http://127.0.0.1:8000/auth' # URL de votre application frontend (React, Vue, etc.)
-#  url settings.py
+# settings.py
 FRONTEND_URL = 'https://gwork.onrender.com/auth'
 
 # Par exemple, pour permettre jusqu’à 10 Mo :
