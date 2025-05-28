@@ -7,6 +7,7 @@ from .views import *
 urlpatterns = [
     path("home/",index,name="home"),
     path("begin/",first,name="first"),
+    path("mainpage",mainpage,name="mainpage"),
     
     path("", api.urls), # Monte tous les endpoints de l'API sous le chemin de cette application
 ]

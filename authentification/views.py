@@ -11,3 +11,8 @@ def first(request):
     Rend le fichier HTML principal de l'application frontend.
     """
     return render(request, 'first.html')
+def mainpage(request):
+    """
+    Rend le fichier HTML principal de l'application frontend.
+    """
+    return render(request, 'mainpage.html')

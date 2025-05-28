@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Plateforme d'Emploi</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .map-container {
+            height: 500px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.1);
+        }
+        
+        .chat-container {
+            height: 400px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .job-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+            border-color: #8b5cf6;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        
+        .message-sent {
+            background: #8b5cf6;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .message-received {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .online-indicator {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid white;
+        }
+        
+        .filter-chip {
+            transition: all 0.2s ease;
+        }
+        
+        .filter-chip:hover {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .filter-chip.active {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #8b5cf6 #f1f5f9;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-purple-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-purple-600">
+                            <i class="fas fa-briefcase mr-2"></i>JobConnect
+                        </h1>
+                    </div>
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <button id="nav-dashboard" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-purple-700 hover:bg-purple-50">
+                            <i class="fas fa-home mr-1"></i>Accueil
+                        </button>
+                        <button id="nav-jobs" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-purple-700 hover:bg-purple-50">
+                            <i class="fas fa-search mr-1"></i>Emplois
+                        </button>
+                        <button id="nav-map" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-purple-700 hover:bg-purple-50">
+                            <i class="fas fa-map-marker-alt mr-1"></i>Carte
+                        </button>
+                        <button id="nav-messages" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-purple-700 hover:bg-purple-50 relative">
+                            <i class="fas fa-comments mr-1"></i>Messages
+                            <span class="notification-badge" id="message-count">3</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="notifications-btn" class="relative p-2 text-gray-400 hover:text-purple-600">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-badge" id="notification-count">5</span>
+                    </button>
+                    <div class="relative">
+                        <button id="profile-btn" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Profile">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 text-white">
+            <div class="p-6">
+                <div class="flex items-center mb-6">
+                    <img class="h-12 w-12 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Profile">
+                    <div class="ml-3">
+                        <p class="text-sm font-semibold">Jean Dupont</p>
+                        <p class="text-xs opacity-75">Travailleur</p>
+                    </div>
+                </div>
+                
+                <nav class="space-y-2">
+                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg bg-white bg-opacity-20">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        Tableau de bord
+                    </a>
+                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
+                        <i class="fas fa-user mr-3"></i>
+                        Mon Profil
+                    </a>
+                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
+                        <i class="fas fa-file-alt mr-3"></i>
+                        Mes Candidatures
+                    </a>
+                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
+                        <i class="fas fa-star mr-3"></i>
+                        Favoris
+                    </a>
+                    <a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-10">
+                        <i class="fas fa-cog mr-3"></i>
+                        Paramètres
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-hidden">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="p-6">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Tableau de bord</h2>
+                    <p class="text-gray-600">Bienvenue sur JobConnect, votre plateforme d'emploi</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100">
+                                <i class="fas fa-briefcase text-purple-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold text-gray-900">24</p>
+                                <p class="text-gray-600 text-sm">Emplois disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold text-gray-900">8</p>
+                                <p class="text-gray-600 text-sm">Candidatures envoyées</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100">
+                                <i class="fas fa-eye text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold text-gray-900">156</p>
+                                <p class="text-gray-600 text-sm">Vues de profil</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-orange-100">
+                                <i class="fas fa-comments text-orange-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-2xl font-semibold text-gray-900">12</p>
+                                <p class="text-gray-600 text-sm">Messages non lus</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
+                        <div class="space-y-3">
+                            <button class="w-full flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                                <span class="flex items-center">
+                                    <i class="fas fa-plus mr-3 text-purple-600"></i>
+                                    Créer une offre d'emploi
+                                </span>
+                                <i class="fas fa-arrow-right text-purple-600"></i>
+                            </button>
+                            <button class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                <span class="flex items-center">
+                                    <i class="fas fa-search mr-3 text-gray-600"></i>
+                                    Rechercher des candidats
+                                </span>
+                                <i class="fas fa-arrow-right text-gray-600"></i>
+                            </button>
+                            <button class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                <span class="flex items-center">
+                                    <i class="fas fa-edit mr-3 text-gray-600"></i>
+                                    Mettre à jour mon profil
+                                </span>
+                                <i class="fas fa-arrow-right text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Activité récente</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Candidature acceptée</p>
+                                    <p class="text-xs text-gray-500">Développeur Web - TechCorp</p>
+                                </div>
+                                <span class="text-xs text-gray-400">2h</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Nouveau message</p>
+                                    <p class="text-xs text-gray-500">De Marie Martin</p>
+                                </div>
+                                <span class="text-xs text-gray-400">5h</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <div class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Profil visité</p>
+                                    <p class="text-xs text-gray-500">Par WebDesign Studio</p>
+                                </div>
+                                <span class="text-xs text-gray-400">1j</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Section -->
+            <div id="jobs-section" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Offres d'emploi</h2>
+                    <p class="text-gray-600">Découvrez les opportunités qui vous correspondent</p>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" id="search-input" placeholder="Rechercher un emploi..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <option>Tous les domaines</option>
+                            <option>Informatique</option>
+                            <option>Marketing</option>
+                            <option>Design</option>
+                            <option>Vente</option>
+                        </select>
+                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            <option>Toutes les villes</option>
+                            <option>Yaoundé</option>
+                            <option>Douala</option>
+                            <option>Bafoussam</option>
+                        </select>
+                        <button class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-search mr-2"></i>Rechercher
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">CDI</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">CDD</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">Freelance</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">Temps partiel</span>
+                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">Remote</span>
+                    </div>
+                </div>
+
+                <!-- Job Listings -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="jobs-container">
+                    <!-- Job Card 1 -->
+                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center">
+                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-gray-900">Développeur Frontend</h3>
+                                    <p class="text-gray-600 text-sm">TechCorp SARL</p>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-purple-600">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center text-sm text-gray-600 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Yaoundé, Cameroun</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>CDI</span>
+                        </div>
+                        
+                        <p class="text-gray-700 text-sm mb-4">Nous recherchons un développeur frontend passionné pour rejoindre notre équipe dynamique...</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">React</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">JavaScript</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">CSS</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-semibold text-purple-600">250,000 - 400,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                                Postuler
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Job Card 2 -->
+                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center">
+                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-gray-900">Designer UX/UI</h3>
+                                    <p class="text-gray-600 text-sm">Creative Studio</p>
+                                </div>
+                            </div>
+                            <button class="text-purple-600">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center text-sm text-gray-600 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Douala, Cameroun</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>CDD</span>
+                        </div>
+                        
+                        <p class="text-gray-700 text-sm mb-4">Rejoignez notre équipe créative pour concevoir des expériences utilisateur exceptionnelles...</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Figma</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Adobe XD</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Prototyping</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-semibold text-purple-600">200,000 - 350,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                                Postuler
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- More job cards... -->
+                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center">
+                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-gray-900">Marketing Manager</h3>
+                                    <p class="text-gray-600 text-sm">MarketPro</p>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-purple-600">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center text-sm text-gray-600 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Bafoussam, Cameroun</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>CDI</span>
+                        </div>
+                        
+                        <p class="text-gray-700 text-sm mb-4">Développez notre stratégie marketing et gérez nos campagnes digitales...</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">SEO</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Social Media</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Analytics</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-semibold text-purple-600">300,000 - 500,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                                Postuler
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center">
+                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-3">
+                                    <h3 class="font-semibold text-gray-900">Data Analyst</h3>
+                                    <p class="text-gray-600 text-sm">DataCorp</p>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-purple-600">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center text-sm text-gray-600 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Remote, Cameroun</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>Freelance</span>
+                        </div>
+                        
+                        <p class="text-gray-700 text-sm mb-4">Analysez nos données pour générer des insights business exploitables...</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Python</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">SQL</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Tableau</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-semibold text-purple-600">150,000 - 250,000 FCFA</span>
+                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                                Postuler
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More -->
+                <div class="text-center mt-8">
+                    <button class="px-6 py-3 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition">
+                        Charger plus d'offres d'emploi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-purple-100 py-6">
+        <div class="max-w-7xl mx-auto text-center text-gray-600">
+            <p>&copy; 2023 JobConnect. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#" class="text-gray-600 hover:text-purple-600">Politique de confidentialité</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600">Conditions d'utilisation</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script>
+        // Initialiser la carte, etc.
+        const map = L.map('map').setView([3.8480, 11.5021], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+    </script>
+</body>
+</html>
