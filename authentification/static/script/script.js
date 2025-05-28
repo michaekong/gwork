@@ -4,7 +4,7 @@
 }
     // Base URL de votre API Django Ninja
      //const API_BASE_URL = 'http://127.0.0.1:8000/auth'; // <-- URL mise à jour
-    const API_BASE_URL = 'https://gwork.onrender.com/auth/'
+    const API_BASE_URL = 'https://gwork.onrender.com/auth'
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
 
