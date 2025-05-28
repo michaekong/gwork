@@ -3,8 +3,8 @@
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-   // const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // <-- URL mise à jour
-     const API_BASE_URL = 'https://gwork.onrender.com/auth/auth'
+    const API_BASE_URL = 'http://127.0.0.1:8000/auth'; // <-- URL mise à jour
+     //const API_BASE_URL = 'https://gwork.onrender.com/auth/'
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
 
@@ -208,7 +208,7 @@ formData.append('est_entreprise_verifiee', false);
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/register/${userType}`, {
+        const response = await fetch(`${API_BASE_URL}/auth/register/${userType}`, {
             method: 'POST',
             body: formData,  // Laissez le navigateur gérer les headers (multipart/form-data)
         });
@@ -253,7 +253,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
     const payload = Object.fromEntries(formData.entries());
 
     try {
-        const response = await fetch(`${API_BASE_URL}/login`, {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -273,7 +273,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
             loginForm.reset();
             showSection('dashboard-section');
             fetchUserProfile();
-        } else {
+          window.location.href = `${API_BASE_URL}/mainpage`;
             showMessage(`Erreur: ${data.detail || 'Erreur inconnue'}`, 'error');
         }
 
@@ -295,7 +295,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/logout`, {
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -326,7 +326,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/me`, {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -368,7 +368,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/users/`, {
+            const response = await fetch(`${API_BASE_URL}/auth/users/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -417,7 +417,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+            const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

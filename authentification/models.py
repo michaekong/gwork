@@ -73,7 +73,7 @@ class Travailleur(models.Model):
         validators=[RegexValidator(regex='^[0-9\s\+\-]+$', message="Coordonnées invalides.")]
     )
     photo_profil = models.ImageField(
-        upload_to='photos_profil/',
+        upload_to='media/photos_profil/',
         blank=True,
         null=True,
         verbose_name="Photo de profil",
@@ -114,7 +114,7 @@ class Travailleur(models.Model):
     )
 
     cv = models.FileField(
-        upload_to='cv/',
+        upload_to='media/cv/',
         blank=True,
         null=True,
         verbose_name="CV (PDF)",

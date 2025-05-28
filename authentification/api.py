@@ -249,9 +249,10 @@ def login(request, payload: EstablishmentAuthPayload):
     # Mettre à jour la dernière connexion
     user.derniere_connexion = timezone.now()
     user.save()
-
+    url=f"{settings.FRONTEND_URL}/mainpage"
     access_token = create_jwt_token(user)
-    return {"access_token": access_token, "token_type": "Bearer"}
+
+    return {"access_token": access_token, "token_type": "Bearer","url":url}
 
 
 @api.post("/auth/logout", response=MessageResponse, auth=JWTAuth())

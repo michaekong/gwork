@@ -16,7 +16,7 @@
     
     <style>
         .map-container {
-            height: 500px;
+            height: 250px;
             width: 100%;
             border-radius: 12px;
             overflow: hidden;
@@ -24,7 +24,8 @@
         }
         
         .chat-container {
-            height: 400px;
+            height: 250px;
+            width: 100%;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(139, 92, 246, 0.1);
         }
@@ -42,6 +43,7 @@
         .job-card {
             transition: all 0.3s ease;
             border: 1px solid #e5e7eb;
+            width: 100%;
         }
         
         .job-card:hover {
@@ -66,27 +68,26 @@
         }
         
         .sidebar {
-            width: 16rem; /* 256px */
+            width: 16rem;
             min-height: 100vh;
             background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
             transition: transform 0.3s ease-in-out;
             z-index: 50;
         }
         
-        /* Sidebar hidden by default on small screens */
         @media (max-width: 1023px) {
             .sidebar {
                 position: fixed;
                 top: 0;
                 left: 0;
                 transform: translateX(-100%);
+                width: 75%;
             }
             .sidebar.open {
                 transform: translateX(0);
             }
         }
         
-        /* Sidebar visible on large screens */
         @media (min-width: 1024px) {
             .sidebar {
                 position: sticky;
@@ -153,37 +154,117 @@
             background: #8b5cf6;
             border-radius: 3px;
         }
+
+        /* Navigation responsive */
+        .nav-container {
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-logo {
+            padding: 0.5rem 0;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .nav-btn {
+            white-space: nowrap;
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            color: #4b5563;
+            font-size: 0.875rem;
+            transition: background-color 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: #f3f4f6;
+            color: #8b5cf6;
+        }
+
+        .nav-btn.active {
+            color: #8b5cf6;
+            background-color: #f3f4f6;
+        }
+
+        .nav-btn i {
+            margin-right: 0.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .nav-container {
+                overflow-x: hidden;
+                padding: 1rem;
+            }
+            .nav-items {
+                gap: 1.5rem;
+            }
+            .nav-btn {
+                font-size: 1rem;
+            }
+        }
+
+        /* Main content */
+        .main-content {
+            width: 100%;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+
+        .grid-container {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 640px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Job listings */
+        #jobs-container {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 640px) {
+            #jobs-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
     <nav class="bg-white shadow-lg border-b border-purple-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+        <div class="max-w-7xl mx-auto nav-container">
+            <div class="nav-logo flex items-center justify-between">
                 <div class="flex items-center">
-                    <!-- Hamburger Menu for Mobile -->
+                    <!-- Hamburger Menu for Sidebar on Mobile -->
                     <button id="sidebar-toggle" class="lg:hidden p-2 text-gray-600 hover:text-purple-600 focus:outline-none">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                     <div class="flex-shrink-0 ml-2">
-                        <h1 class="text-2xl font-bold text-purple-600">
+                        <h1 class="text-2xl font-bold text-purple-600 logo-text">
                             <i class="fas fa-briefcase mr-2"></i>GWORK
                         </h1>
-                    </div>
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <button id="nav-dashboard" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-purple-700 hover:bg-purple-50">
-                            <i class="fas fa-home mr-1"></i>Accueil
-                        </button>
-                        <button id="nav-jobs" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-purple-700 hover:bg-purple-50">
-                            <i class="fas fa-search mr-1"></i>Emplois
-                        </button>
-                        <button id="nav-map" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-purple-700 hover:bg-purple-50">
-                            <i class="fas fa-map-marker-alt mr-1"></i>Carte
-                        </button>
-                        <button id="nav-messages" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-purple-700 hover:bg-purple-50 relative">
-                            <i class="fas fa-comments mr-1"></i>Messages
-                            <span class="notification-badge" id="message-count">3</span>
-                        </button>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -197,6 +278,21 @@
                         </button>
                     </div>
                 </div>
+            </div>
+            <div class="nav-items">
+                <button id="nav-dashboard" class="nav-btn active">
+                    <i class="fas fa-home mr-1"></i>Accueil
+                </button>
+                <button id="nav-jobs" class="nav-btn">
+                    <i class="fas fa-search mr-1"></i>Emplois
+                </button>
+                <button id="nav-map" class="nav-btn">
+                    <i class="fas fa-map-marker-alt mr-1"></i>Carte
+                </button>
+                <button id="nav-messages" class="nav-btn relative">
+                    <i class="fas fa-comments mr-1"></i>Messages
+                    <span class="notification-badge" id="message-count">3</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -250,87 +346,87 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 overflow-hidden">
+        <div class="flex-1 overflow-hidden main-content">
             <!-- Dashboard Section -->
-            <div id="dashboard-section" class="p-6">
+            <div id="dashboard-section" class="p-4">
                 <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900">Tableau de bord</h2>
-                    <p class="text-gray-600">Bienvenue sur GWORK, votre plateforme d'emploi</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Tableau de bord</h2>
+                    <p class="text-gray-600 text-sm">Bienvenue sur GWORK, votre plateforme d'emploi</p>
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div class="grid-container">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-purple-100">
-                                <i class="fas fa-briefcase text-purple-600 text-xl"></i>
+                                <i class="fas fa-briefcase text-purple-600 text-lg"></i>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-2xl font-semibold text-gray-900">24</p>
-                                <p class="text-gray-600 text-sm">Emplois disponibles</p>
+                            <div class="ml-3">
+                                <p class="text-xl font-semibold text-gray-900">24</p>
+                                <p class="text-gray-600 text-xs">Emplois disponibles</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-green-100">
-                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                <i class="fas fa-check-circle text-green-600 text-lg"></i>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-2xl font-semibold text-gray-900">8</p>
-                                <p class="text-gray-600 text-sm">Candidatures envoyées</p>
+                            <div class="ml-3">
+                                <p class="text-xl font-semibold text-gray-900">8</p>
+                                <p class="text-gray-600 text-xs">Candidatures envoyées</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-blue-100">
-                                <i class="fas fa-eye text-blue-600 text-xl"></i>
+                                <i class="fas fa-eye text-blue-600 text-lg"></i>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-2xl font-semibold text-gray-900">156</p>
-                                <p class="text-gray-600 text-sm">Vues de profil</p>
+                            <div class="ml-3">
+                                <p class="text-xl font-semibold text-gray-900">156</p>
+                                <p class="text-gray-600 text-xs">Vues de profil</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-orange-100">
-                                <i class="fas fa-comments text-orange-600 text-xl"></i>
+                                <i class="fas fa-comments text-orange-600 text-lg"></i>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-2xl font-semibold text-gray-900">12</p>
-                                <p class="text-gray-600 text-sm">Messages non lus</p>
+                            <div class="ml-3">
+                                <p class="text-xl font-semibold text-gray-900">12</p>
+                                <p class="text-gray-600 text-xs">Messages non lus</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
-                        <div class="space-y-3">
-                            <button class="w-full flex items-center justify-between p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-base font-semibold text-gray-900 mb-3">Actions rapides</h3>
+                        <div class="space-y-2">
+                            <button class="w-full flex items-center justify-between p-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition text-sm">
                                 <span class="flex items-center">
-                                    <i class="fas fa-plus mr-3 text-purple-600"></i>
+                                    <i class="fas fa-plus mr-2 text-purple-600"></i>
                                     Créer une offre d'emploi
                                 </span>
                                 <i class="fas fa-arrow-right text-purple-600"></i>
                             </button>
-                            <button class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <button class="w-full flex items-center justify-between p-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition text-sm">
                                 <span class="flex items-center">
-                                    <i class="fas fa-search mr-3 text-gray-600"></i>
+                                    <i class="fas fa-search mr-2 text-gray-600"></i>
                                     Rechercher des candidats
                                 </span>
                                 <i class="fas fa-arrow-right text-gray-600"></i>
                             </button>
-                            <button class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <button class="w-full flex items-center justify-between p-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition text-sm">
                                 <span class="flex items-center">
-                                    <i class="fas fa-edit mr-3 text-gray-600"></i>
+                                    <i class="fas fa-edit mr-2 text-gray-600"></i>
                                     Mettre à jour mon profil
                                 </span>
                                 <i class="fas fa-arrow-right text-gray-600"></i>
@@ -338,29 +434,29 @@
                         </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Activité récente</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                                <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-base font-semibold text-gray-900 mb-3">Activité récente</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center p-2 bg-gray-50 rounded-lg">
+                                <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                                 <div class="flex-1">
-                                    <p class="text-sm text-gray-900">Candidature acceptée</p>
+                                    <p class="text-xs text-gray-900">Candidature acceptée</p>
                                     <p class="text-xs text-gray-500">Développeur Web - TechCorp</p>
                                 </div>
                                 <span class="text-xs text-gray-400">2h</span>
                             </div>
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                            <div class="flex items-center p-2 bg-gray-50 rounded-lg">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
                                 <div class="flex-1">
-                                    <p class="text-sm text-gray-900">Nouveau message</p>
+                                    <p class="text-xs text-gray-900">Nouveau message</p>
                                     <p class="text-xs text-gray-500">De Marie Martin</p>
                                 </div>
                                 <span class="text-xs text-gray-400">5h</span>
                             </div>
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                                <div class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+                            <div class="flex items-center p-2 bg-gray-50 rounded-lg">
+                                <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
                                 <div class="flex-1">
-                                    <p class="text-sm text-gray-900">Profil visité</p>
+                                    <p class="text-xs text-gray-900">Profil visité</p>
                                     <p class="text-xs text-gray-500">Par WebDesign Studio</p>
                                 </div>
                                 <span class="text-xs text-gray-400">1j</span>
@@ -371,55 +467,53 @@
             </div>
 
             <!-- Jobs Section -->
-            <div id="jobs-section" class="p-6 hidden">
+            <div id="jobs-section" class="p-4 hidden">
                 <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900">Offres d'emploi</h2>
-                    <p class="text-gray-600">Découvrez les opportunités qui vous correspondent</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Offres d'emploi</h2>
+                    <p class="text-gray-600 text-sm">Découvrez les opportunités qui vous correspondent</p>
                 </div>
 
                 <!-- Filters -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
-                    <div class="flex flex-wrap gap-4 items-center">
-                        <div class="flex-1 min-w-64">
-                            <input type="text" id="search-input" placeholder="Rechercher un emploi..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                        </div>
-                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4">
+                    <div class="flex flex-col gap-3">
+                        <input type="text" id="search-input" placeholder="Rechercher un emploi..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
                             <option>Tous les domaines</option>
                             <option>Informatique</option>
                             <option>Marketing</option>
                             <option>Design</option>
                             <option>Vente</option>
                         </select>
-                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm">
                             <option>Toutes les villes</option>
                             <option>Yaoundé</option>
                             <option>Douala</option>
                             <option>Bafoussam</option>
                         </select>
-                        <button class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                        <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                             <i class="fas fa-search mr-2"></i>Rechercher
                         </button>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2 mt-4">
-                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">CDI</span>
-                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">CDD</span>
-                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">Freelance</span>
-                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">Temps partiel</span>
-                        <span class="filter-chip px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm cursor-pointer">Remote</span>
+                    <div class="flex flex-wrap gap-2 mt-3 overflow-x-auto">
+                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">CDI</span>
+                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">CDD</span>
+                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">Freelance</span>
+                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">Temps partiel</span>
+                        <span class="filter-chip px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs cursor-pointer">Remote</span>
                     </div>
                 </div>
 
                 <!-- Job Listings -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="jobs-container">
+                <div id="jobs-container">
                     <!-- Job Card 1 -->
-                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-4">
+                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center">
-                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-3">
-                                    <h3 class="font-semibold text-gray-900">Développeur Frontend</h3>
-                                    <p class="text-gray-600 text-sm">TechCorp SARL</p>
+                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-2">
+                                    <h3 class="font-semibold text-gray-900 text-sm">Développeur Frontend</h3>
+                                    <p class="text-gray-600 text-xs">TechCorp SARL</p>
                                 </div>
                             </div>
                             <button class="text-gray-400 hover:text-purple-600">
@@ -427,38 +521,38 @@
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-sm text-gray-600 mb-3">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
+                        <div class="flex items-center text-xs text-gray-600 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
                             <span>Yaoundé, Cameroun</span>
-                            <span class="mx-2">•</span>
-                            <i class="fas fa-clock mr-2"></i>
+                            <span class="mx-1">•</span>
+                            <i class="fas fa-clock mr-1"></i>
                             <span>CDI</span>
                         </div>
                         
-                        <p class="text-gray-700 text-sm mb-4">Nous recherchons un développeur frontend passionné pour rejoindre notre équipe dynamique...</p>
+                        <p class="text-gray-700 text-xs mb-3">Nous recherchons un développeur frontend passionné pour rejoindre notre équipe dynamique...</p>
                         
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="flex flex-wrap gap-1 mb-3">
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">React</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">JavaScript</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">CSS</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-lg font-semibold text-purple-600">250,000 - 400,000 FCFA</span>
-                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-base font-semibold text-purple-600">250,000 - 400,000 FCFA</span>
+                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                                 Postuler
                             </button>
                         </div>
                     </div>
 
                     <!-- Job Card 2 -->
-                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-4">
+                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center">
-                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-3">
-                                    <h3 class="font-semibold text-gray-900">Designer UX/UI</h3>
-                                    <p class="text-gray-600 text-sm">Creative Studio</p>
+                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-2">
+                                    <h3 class="font-semibold text-gray-900 text-sm">Designer UX/UI</h3>
+                                    <p class="text-gray-600 text-xs">Creative Studio</p>
                                 </div>
                             </div>
                             <button class="text-purple-600">
@@ -466,38 +560,38 @@
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-sm text-gray-600 mb-3">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
+                        <div class="flex items-center text-xs text-gray-600 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
                             <span>Douala, Cameroun</span>
-                            <span class="mx-2">•</span>
-                            <i class="fas fa-clock mr-2"></i>
+                            <span class="mx-1">•</span>
+                            <i class="fas fa-clock mr-1"></i>
                             <span>CDD</span>
                         </div>
                         
-                        <p class="text-gray-700 text-sm mb-4">Rejoignez notre équipe créative pour concevoir des expériences utilisateur exceptionnelles...</p>
+                        <p class="text-gray-700 text-xs mb-3">Rejoignez notre équipe créative pour concevoir des expériences utilisateur exceptionnelles...</p>
                         
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="flex flex-wrap gap-1 mb-3">
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Figma</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Adobe XD</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Prototyping</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-lg font-semibold text-purple-600">200,000 - 350,000 FCFA</span>
-                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-base font-semibold text-purple-600">200,000 - 350,000 FCFA</span>
+                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                                 Postuler
                             </button>
                         </div>
                     </div>
 
                     <!-- Job Card 3 -->
-                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-4">
+                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center">
-                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-3">
-                                    <h3 class="font-semibold text-gray-900">Marketing Manager</h3>
-                                    <p class="text-gray-600 text-sm">MarketPro</p>
+                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-2">
+                                    <h3 class="font-semibold text-gray-900 text-sm">Marketing Manager</h3>
+                                    <p class="text-gray-600 text-xs">MarketPro</p>
                                 </div>
                             </div>
                             <button class="text-gray-400 hover:text-purple-600">
@@ -505,38 +599,38 @@
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-sm text-gray-600 mb-3">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
+                        <div class="flex items-center text-xs text-gray-600 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
                             <span>Bafoussam, Cameroun</span>
-                            <span class="mx-2">•</span>
-                            <i class="fas fa-clock mr-2"></i>
+                            <span class="mx-1">•</span>
+                            <i class="fas fa-clock mr-1"></i>
                             <span>CDI</span>
                         </div>
                         
-                        <p class="text-gray-700 text-sm mb-4">Développez notre stratégie marketing et gérez nos campagnes digitales...</p>
+                        <p class="text-gray-700 text-xs mb-3">Développez notre stratégie marketing et gérez nos campagnes digitales...</p>
                         
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="flex flex-wrap gap-1 mb-3">
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">SEO</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Social Media</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Analytics</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-lg font-semibold text-purple-600">300,000 - 500,000 FCFA</span>
-                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-base font-semibold text-purple-600">300,000 - 500,000 FCFA</span>
+                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                                 Postuler
                             </button>
                         </div>
                     </div>
 
                     <!-- Job Card 4 -->
-                    <div class="job-card bg-white p-6 rounded-xl shadow-sm">
-                        <div class="flex items-start justify-between mb-4">
+                    <div class="job-card bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center">
-                                <img class="w-12 h-12 rounded-lg" src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
-                                <div class="ml-3">
-                                    <h3 class="font-semibold text-gray-900">Data Analyst</h3>
-                                    <p class="text-gray-600 text-sm">DataCorp</p>
+                                <img class="w-10 h-10 rounded-lg" src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-1.2.1&w=100&h=100&fit=crop" alt="Company">
+                                <div class="ml-2">
+                                    <h3 class="font-semibold text-gray-900 text-sm">Data Analyst</h3>
+                                    <p class="text-gray-600 text-xs">DataCorp</p>
                                 </div>
                             </div>
                             <button class="text-gray-400 hover:text-purple-600">
@@ -544,25 +638,25 @@
                             </button>
                         </div>
                         
-                        <div class="flex items-center text-sm text-gray-600 mb-3">
-                            <i class="fas fa-map-marker-alt mr-2"></i>
+                        <div class="flex items-center text-xs text-gray-600 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
                             <span>Remote, Cameroun</span>
-                            <span class="mx-2">•</span>
-                            <i class="fas fa-clock mr-2"></i>
+                            <span class="mx-1">•</span>
+                            <i class="fas fa-clock mr-1"></i>
                             <span>Freelance</span>
                         </div>
                         
-                        <p class="text-gray-700 text-sm mb-4">Analysez nos données pour générer des insights business exploitables...</p>
+                        <p class="text-gray-700 text-xs mb-3">Analysez nos données pour générer des insights business exploitables...</p>
                         
-                        <div class="flex flex-wrap gap-2 mb-4">
+                        <div class="flex flex-wrap gap-1 mb-3">
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Python</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">SQL</span>
                             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Tableau</span>
                         </div>
                         
                         <div class="flex items-center justify-between">
-                            <span class="text-lg font-semibold text-purple-600">150,000 - 250,000 FCFA</span>
-                            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <span class="text-base font-semibold text-purple-600">150,000 - 250,000 FCFA</span>
+                            <button class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                                 Postuler
                             </button>
                         </div>
@@ -570,47 +664,47 @@
                 </div>
 
                 <!-- Load More -->
-                <div class="text-center mt-8">
-                    <button class="px-6 py-3 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition">
+                <div class="text-center mt-6">
+                    <button class="px-4 py-2 border border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition text-sm">
                         Charger plus d'offres d'emploi
                     </button>
                 </div>
             </div>
 
             <!-- Map Section -->
-            <div id="map-section" class="p-6 hidden">
+            <div id="map-section" class="p-4 hidden">
                 <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900">Carte des Emplois</h2>
-                    <p class="text-gray-600">Trouvez des opportunités près de chez vous</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Carte des Emplois</h2>
+                    <p class="text-gray-600 text-sm">Trouvez des opportunités près de chez vous</p>
                 </div>
                 <div id="map" class="map-container"></div>
             </div>
 
             <!-- Messages Section -->
-            <div id="messages-section" class="p-6 hidden">
+            <div id="messages-section" class="p-4 hidden">
                 <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900">Messages</h2>
-                    <p class="text-gray-600">Gérez vos conversations avec les employeurs</p>
+                    <h2 class="text-2xl font-bold text-gray-900">Messages</h2>
+                    <p class="text-gray-600 text-sm">Gérez vos conversations avec les employeurs</p>
                 </div>
-                <div class="chat-container bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-                    <div class="h-80 overflow-y-auto custom-scrollbar p-4">
-                        <div class="message-bubble message-received p-3 rounded-lg mb-3">
-                            <p class="text-sm">Bonjour, nous avons reçu votre candidature pour le poste de Développeur Frontend.</p>
+                <div class="chat-container bg-white p-3 rounded-xl shadow-sm border border-gray-200">
+                    <div class="h-60 overflow-y-auto custom-scrollbar p-3">
+                        <div class="message-bubble message-received p-2 rounded-lg mb-2">
+                            <p class="text-xs">Bonjour, nous avons reçu votre candidature pour le poste de Développeur Frontend.</p>
                             <span class="text-xs text-gray-400">Marie Martin - 10:30</span>
                         </div>
-                        <div class="message-bubble message-sent p-3 rounded-lg mb-3">
-                            <p class="text-sm">Merci pour votre retour ! Quand puis-je passer un entretien ?</p>
+                        <div class="message-bubble message-sent p-2 rounded-lg mb-2">
+                            <p class="text-xs">Merci pour votre retour ! Quand puis-je passer un entretien ?</p>
                             <span class="text-xs text-gray-400">Vous - 10:35</span>
                         </div>
-                        <div class="message-bubble message-received p-3 rounded-lg mb-3">
-                            <p class="text-sm">Nous pouvons organiser un entretien demain à 14h. Cela vous convient-il ?</p>
+                        <div class="message-bubble message-received p-2 rounded-lg mb-2">
+                            <p class="text-xs">Nous pouvons organiser un entretien demain à 14h. Cela vous convient-il ?</p>
                             <span class="text-xs text-gray-400">Marie Martin - 10:40</span>
                         </div>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-3">
                         <div class="flex items-center">
-                            <input type="text" id="message-input" placeholder="Écrivez un message..." class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            <button class="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <input type="text" id="message-input" placeholder="Écrivez un message..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+                            <button class="ml-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -621,18 +715,18 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-purple-200 py-6">
-        <div class="max-w-7xl mx-auto text-center text-gray-600">
-            <p class="text-sm">© 2023 GWORK. Tous droits réservés.</p>
-            <div class="flex justify-center space-x-6 mt-4">
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition">Politique de confidentialité</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition">Conditions d'utilisation</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition">À propos</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 transition">Contact</a>
+    <footer class="bg-white border-t border-purple-200 py-4">
+        <div class="max-w-7xl mx-auto text-center text-gray-600 px-4">
+            <p class="text-xs">© 2023 GWORK. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-4 mt-2 flex-wrap">
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">Politique de confidentialité</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">Conditions d'utilisation</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">À propos</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 transition text-xs">Contact</a>
             </div>
-            <div class="mt-4">
-                <span class="text-gray-500">Suivez-nous :</span>
-                <div class="flex justify-center space-x-4 mt-2">
+            <div class="mt-2">
+                <span class="text-gray-500 text-xs">Suivez-nous :</span>
+                <div class="flex justify-center space-x-3 mt-1">
                     <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-twitter"></i></a>
                     <a href="#" class="text-purple-600 hover:text-purple-800 transition"><i class="fab fa-linkedin-in"></i></a>
@@ -646,20 +740,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
         // Base URL de votre API Django Ninja
-        const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth'; // URL locale
-        //const API_BASE_URL = 'https://gwork.onrender.com/auth/auth';
+        const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth';
 
         // Map and layers
         let map;
         let userMarker;
         let preferredZonePolygon;
-        let data;
 
         // Initialize map
-        function initializeMap(longitude,latitude) {
-
+        function initializeMap() {
             if (!map) {
-                map = L.map('map').setView([longitude, latitude], 13); // Default to Yaoundé
+                map = L.map('map').setView([3.8480, 11.5021], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '© OpenStreetMap'
@@ -668,44 +759,29 @@
         }
 
         // Update map with user location and preferred zone
-        function updateMapWithUserData(data,longitude,latitude) {
-            if (!map) {
-                initializeMap(longitude,latitude);
-            }
+        function updateMapWithUserData(data) {
+            if (!map) initializeMap();
 
-            // Remove existing marker and polygon if they exist
-            if (userMarker) {
-                map.removeLayer(userMarker);
-            }
-            if (preferredZonePolygon) {
-                map.removeLayer(preferredZonePolygon);
-            }
+            if (userMarker) map.removeLayer(userMarker);
+            if (preferredZonePolygon) map.removeLayer(preferredZonePolygon);
 
-            // Check if zone_preference exists and is not empty
             if (data.zone_preference && data.zone_preference.length > 0) {
-                // Plot user location (first coordinate)
-                const primaryLocation = data.zone_preference[0]; // [latitude, longitude]
+                const primaryLocation = data.zone_preference[0];
                 if (primaryLocation && primaryLocation.length === 2) {
                     userMarker = L.marker([primaryLocation[0], primaryLocation[1]])
                         .addTo(map)
                         .bindPopup(`<b>${data.nom} ${data.prenom}</b><br>Votre position`)
                         .openPopup();
-
-                    // Center map on user location
                     map.setView([primaryLocation[0], primaryLocation[1]], 13);
                 }
 
-                // Plot preferred zone as a polygon
-                if (data.zone_preference.length > 2) { // Need at least 3 points for a polygon
+                if (data.zone_preference.length > 2) {
                     const latLngs = data.zone_preference.map(coord => [coord[0], coord[1]]);
                     preferredZonePolygon = L.polygon(latLngs, {
                         color: '#8b5cf6',
                         fillColor: '#8b5cf6',
                         fillOpacity: 0.2
-                    }).addTo(map)
-                      .bindPopup('Votre zone de préférence');
-
-                    // Fit map to polygon bounds
+                    }).addTo(map).bindPopup('Votre zone de préférence');
                     map.fitBounds(preferredZonePolygon.getBounds());
                 }
             } else {
@@ -719,7 +795,6 @@
 
         async function fetchUserProfile() {
             const token = getAuthToken();
-            
             if (!token) {
                 showMessage('Veuillez vous connecter pour voir votre profil.', 'info');
                 showSection('login-form');
@@ -729,15 +804,10 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/me`, {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
+                    headers: { 'Authorization': `Bearer ${token}` },
                 });
-
                 const data = await response.json();
-alert(data.latitude)
                 if (response.ok) {
-                    // Update profile information in sidebar
                     document.getElementById('profile-nom').textContent = data.nom || 'N/A';
                     document.getElementById('profile-prenom').textContent = data.prenom || 'N/A';
                     document.getElementById('profile-email').textContent = data.email || 'N/A';
@@ -745,27 +815,18 @@ alert(data.latitude)
                     document.getElementById('profile-disponibilite').textContent = data.disponibilite || 'Non spécifié';
                     document.getElementById('profile-description').textContent = data.description_profil || 'Aucune description';
                     
-                    // CV
                     const cvElement = document.getElementById('profile-cv');
-                    if (data.cv) {
-                        cvElement.innerHTML = `<a href="${data.cv}" target="_blank">Voir le CV</a>`;
-                    } else {
-                        cvElement.textContent = 'CV non disponible';
-                    }
+                    if (data.cv) cvElement.innerHTML = `<a href="${data.cv}" target="_blank">Voir le CV</a>`;
+                    else cvElement.textContent = 'CV non disponible';
                     
-                    // Photo de profil
                     const photoElement = document.getElementById('profile-photo');
                     if (data.photo_profil) {
                         photoElement.src = data.photo_profil;
                         photoElement.classList.remove('hidden');
-                    } else {
-                        photoElement.classList.add('hidden');
-                    }
+                    } else photoElement.classList.add('hidden');
 
-                    // Contrats souhaités
                     document.getElementById('profile-contrats').textContent = data.type_contrat_souhaite?.join(', ') || 'Non spécifié';
 
-                    // Zone de préférence
                     const zoneList = document.getElementById('profile-zone');
                     zoneList.innerHTML = '';
                     if (data.zone_preference && data.zone_preference.length > 0) {
@@ -780,8 +841,7 @@ alert(data.latitude)
                         zoneList.appendChild(item);
                     }
 
-                    // Update map with user data
-                    updateMapWithUserData(data,data.longitude,data.latitude);
+                    updateMapWithUserData(data);
                 } else {
                     showMessage(`Erreur de chargement du profil: ${data.detail || JSON.stringify(data)}`, 'error');
                     removeAuthToken();
@@ -806,7 +866,6 @@ alert(data.latitude)
                     },
                     body: JSON.stringify(data)
                 });
-
                 if (response.ok) {
                     showMessage('Profil mis à jour avec succès.', 'success');
                     fetchUserProfile();
@@ -820,18 +879,14 @@ alert(data.latitude)
             }
         }
 
-        // Show a message (placeholder function, implement as needed)
         function showMessage(message, type) {
             console.log(`[${type}] ${message}`);
-            // Add your preferred notification system here (e.g., toast or alert)
         }
 
-        // Remove auth token (placeholder function, implement as needed)
         function removeAuthToken() {
             localStorage.removeItem('access_token');
         }
 
-        // Sidebar toggle functionality
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebarClose = document.getElementById('sidebar-close');
@@ -841,14 +896,12 @@ alert(data.latitude)
                 sidebar.classList.toggle('open');
                 sidebar.classList.remove('hidden');
             });
-
             sidebarClose.addEventListener('click', () => {
                 sidebar.classList.remove('open');
                 sidebar.classList.add('hidden');
             });
         }
 
-        // Navigation event listeners
         document.getElementById('nav-dashboard').addEventListener('click', () => {
             showSection('dashboard-section');
             if (window.innerWidth < 1024) {
@@ -886,32 +939,27 @@ alert(data.latitude)
             const sections = ['dashboard-section', 'jobs-section', 'map-section', 'messages-section'];
             sections.forEach(section => {
                 const element = document.getElementById(section);
-                if (element) {
-                    element.classList.add('hidden');
-                }
+                if (element) element.classList.add('hidden');
             });
-            
             const selectedSection = document.getElementById(sectionId);
             if (selectedSection) {
                 selectedSection.classList.remove('hidden');
+                if (sectionId === 'map-section' && !map) initializeMap();
             }
 
             const navButtons = document.querySelectorAll('.nav-btn');
             navButtons.forEach(btn => {
-                btn.classList.remove('text-purple-700', 'bg-purple-50');
-                btn.classList.add('text-gray-500');
+                btn.classList.remove('active');
             });
             const activeButton = document.getElementById(`nav-${sectionId.split('-')[0]}`);
             if (activeButton) {
-                activeButton.classList.remove('text-gray-500');
-                activeButton.classList.add('text-purple-700', 'bg-purple-50');
+                activeButton.classList.add('active');
             }
         }
 
-        // Initialize page
         window.onload = () => {
             fetchUserProfile();
-            showSection('dashboard-section'); // Show dashboard by default
+            showSection('dashboard-section');
         };
     </script>
 </body>
