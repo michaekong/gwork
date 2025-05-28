@@ -739,9 +739,9 @@
     <!-- Leaflet JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script>
-        // Base URL de votre API Django Ninja
-        const API_BASE_URL = 'http://127.0.0.1:8000/auth/auth';
-
+        //Base URL de votre API Django Ninja
+       // const API_BASE_URL = 'http://127.0.0.1:8000/auth';
+ const API_BASE_URL = 'https://gwork.onrender.com/auth'
         // Map and layers
         let map;
         let userMarker;
@@ -802,7 +802,7 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/me`, {
+                const response = await fetch(`${API_BASE_URL}/auth/me`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
@@ -858,7 +858,7 @@
         async function updateProfile(data) {
             const token = getAuthToken();
             try {
-                const response = await fetch(`${API_BASE_URL}/me/update`, {
+                const response = await fetch(`${API_BASE_URL}/auth/me/update`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
