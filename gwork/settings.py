@@ -134,7 +134,7 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Où les fichiers statiques seront collectés en production
-MEDIA_URL = '/media/'
+MEDIA_URL = ''
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -161,9 +161,9 @@ JWT_EXPIRATION_TIME_HOURS = 24 # Token valide 24 heures
 
 # Configuration de la vérification d'email
 EMAIL_VERIFICATION_SALT = "VOTRE_SEL_UNIQUE_ET_SECRET_POUR_LA_VERIFICATION_EMAIL" # À changer en production !
-#FRONTEND_URL = 'http://127.0.0.1:8000/auth' # URL de votre application frontend (React, Vue, etc.)
+FRONTEND_URL = 'http://127.0.0.1:8000/auth' # URL de votre application frontend (React, Vue, etc.)
 # settings.py
-FRONTEND_URL = 'https://gwork.onrender.com/auth'
+#FRONTEND_URL = 'https://gwork.onrender.com/auth'
 
 # Par exemple, pour permettre jusqu’à 10 Mo :
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB

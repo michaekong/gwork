@@ -3,8 +3,9 @@
     spinner.style.display = show ? 'block' : 'none';
 }
     // Base URL de votre API Django Ninja
-    //const API_BASE_URL = 'http://127.0.0.1:8000/auth/; // <-- URL mise à jour
-     const API_BASE_URL = 'https://gwork.onrender.com/auth/';
+    const API_BASE_URL = 'http://127.0.0.1:8000/auth/';
+     // <-- URL mise à jour
+     //const API_BASE_URL = 'https://gwork.onrender.com/auth/';
     // Variables globales pour latitude et longitude
     let latitude, longitude,lat3,lng3;
 
@@ -339,7 +340,7 @@ document.getElementById('close-tooltip').addEventListener('click', () => {
 
             if (response.ok) {
                 document.getElementById('profile-id').textContent = data.id_utilisateur;
-                document.getElementById('profile-email').textContent = data.email;
+
                 document.getElementById('profile-verified').textContent = data.est_email_verifie ? 'Oui' : 'Non';
                 document.getElementById('profile-admin').textContent = data.est_administrateur ? 'Oui' : 'Non';
 

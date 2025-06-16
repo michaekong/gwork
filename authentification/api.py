@@ -49,7 +49,7 @@ def verify_email(request, token: str):
             user.est_email_verifie = True
             user.save()
             # Redirection vers la page de connexion
-            return HttpResponseRedirect(f"{settings.FRONTEND_URL}/home")
+            return HttpResponseRedirect(f"{settings.FRONTEND_URL}/home/")
         else:
             raise errors.HttpError(400, "Votre email est déjà vérifié.")
     except Utilisateur.DoesNotExist:
@@ -107,11 +107,11 @@ def register_travailleur(
     photo_url, cv_url = None, None
     if photo_profil:
     # Sauvegarde de la photo uploadée par l'utilisateur
-        path = default_storage.save(f"photos_profil/{photo_profil.name}", ContentFile(photo_profil.read()))
+        path = default_storage.save(f"media/photos_profil/{photo_profil.name}", ContentFile(photo_profil.read()))
         photo_url = default_storage.url(path)
     else:
     # Utilisation d'une image par défaut déjà présente dans le dossier media
-        photo_url = default_storage.url("photos_profil/baseprofile.png")
+        photo_url = default_storage.url("media/photos_profil/baseprofile.png")
     
     if cv:
         path = default_storage.save(f"cv/{cv.name}", ContentFile(cv.read()))
